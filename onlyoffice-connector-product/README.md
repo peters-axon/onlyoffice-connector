@@ -22,10 +22,9 @@ We use all entries under the heading "Demo" for the demo-Tab on our Website, e.g
 
 ## Setup
 
-YOUR SETUP DESCRIPTION GOES HERE
-<!--
-The entries under the heading "Setup" are filled in this tab, e.g. for the Connector A-Trust here: https://market.axonivy.com/a-trust#tab-setup. 
--->
+Zuerst muss man den ONLYOFFICE Document Server starten. Dazu gibt es im extra Projekt ein docker compose Setup. Natürlich kann man auch die Standalone Installation direkt bei ONLYOFFICE herunterladen. Das Passwort im Setup muss auch in einer globalen Variable eingetragen werden.
+
+CSRF muss abgeschaltet sein.
 
 ```
 @variables.yaml@

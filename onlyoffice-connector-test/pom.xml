@@ -7,9 +7,9 @@
   <version>12.0.16-SNAPSHOT</version>
   <packaging>iar-integration-test</packaging>
   <properties>
-    <project.build.plugin.version>12.0.16</project.build.plugin.version>
+    <project.build.plugin.version>12.0.15</project.build.plugin.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <tester.version>12.0.16</tester.version>
+    <tester.version>12.0.3</tester.version>
   </properties>
   <pluginRepositories>
     <!-- Snapshot releases are available via sonatype.org -->

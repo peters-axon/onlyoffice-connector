@@ -1,0 +1,121 @@
+{
+  "$schema" : "https://json-schema.axonivy.com/process/12.0.0/process.json",
+  "id" : "19F42B1BE5D83040",
+  "config" : {
+    "data" : "com.axonivy.connector.onlyoffice.connector.demo.OnlyOfficeDemoData"
+  },
+  "elements" : [ {
+      "id" : "f0",
+      "type" : "RequestStart",
+      "name" : "onlyOfficeDemo",
+      "config" : {
+        "signature" : "onlyOfficeDemo",
+        "request" : {
+          "name" : "ONLYOFFICE Demo"
+        }
+      },
+      "visual" : {
+        "at" : { "x" : 96, "y" : 128 }
+      },
+      "connect" : [
+        { "id" : "f2", "to" : "f3" }
+      ]
+    }, {
+      "id" : "f1",
+      "type" : "TaskEnd",
+      "visual" : {
+        "at" : { "x" : 872, "y" : 128 },
+        "labelOffset" : { "x" : 13, "y" : 33 }
+      }
+    }, {
+      "id" : "f3",
+      "type" : "Script",
+      "name" : "Prepare case",
+      "config" : {
+        "output" : {
+          "code" : [
+            "import com.axonivy.connector.onlyoffice.connector.DemoService;",
+            "DemoService.get().assertBusinessCase();"
+          ]
+        }
+      },
+      "visual" : {
+        "at" : { "x" : 232, "y" : 128 }
+      },
+      "connect" : [
+        { "id" : "f4", "to" : "f5", "color" : "default" }
+      ]
+    }, {
+      "id" : "f5",
+      "type" : "DialogCall",
+      "name" : "Document preparation",
+      "config" : {
+        "dialog" : "com.axonivy.connector.onlyoffice.connector.DocumentPreparation:start()"
+      },
+      "visual" : {
+        "at" : { "x" : 392, "y" : 128 }
+      },
+      "connect" : [
+        { "id" : "f6", "to" : "f7", "color" : "default", "var" : "in1" }
+      ]
+    }, {
+      "id" : "f7",
+      "type" : "TaskSwitchGateway",
+      "config" : {
+        "tasks" : [ {
+            "id" : "TaskA"
+          }, {
+            "id" : "TaskB"
+          } ]
+      },
+      "visual" : {
+        "at" : { "x" : 520, "y" : 128 },
+        "labelOffset" : { "x" : 14, "y" : 34 }
+      },
+      "connect" : [
+        { "id" : "f8", "to" : "f9", "via" : [ { "x" : 560, "y" : 64 } ], "color" : "default", "condition" : "ivp==\"TaskA.ivp\"" },
+        { "id" : "f12", "to" : "f11", "via" : [ { "x" : 560, "y" : 192 } ], "condition" : "ivp==\"TaskB.ivp\"" }
+      ]
+    }, {
+      "id" : "f9",
+      "type" : "DialogCall",
+      "name" : "Edit document",
+      "config" : {
+        "dialog" : "com.axonivy.connector.onlyoffice.connector.EmbeddingDemo:start()"
+      },
+      "visual" : {
+        "at" : { "x" : 648, "y" : 64 }
+      },
+      "connect" : [
+        { "id" : "f10", "to" : "f13", "via" : [ { "x" : 736, "y" : 64 } ], "color" : "default", "var" : "in1" }
+      ]
+    }, {
+      "id" : "f11",
+      "type" : "DialogCall",
+      "name" : "Edit document",
+      "config" : {
+        "dialog" : "com.axonivy.connector.onlyoffice.connector.EmbeddingDemo:start()"
+      },
+      "visual" : {
+        "at" : { "x" : 648, "y" : 192 }
+      },
+      "connect" : [
+        { "id" : "f15", "to" : "f13", "via" : [ { "x" : 736, "y" : 192 } ], "var" : "in2" }
+      ]
+    }, {
+      "id" : "f13",
+      "type" : "TaskSwitchGateway",
+      "config" : {
+        "tasks" : [ {
+            "id" : "TaskA"
+          } ]
+      },
+      "visual" : {
+        "at" : { "x" : 776, "y" : 128 },
+        "labelOffset" : { "x" : 14, "y" : 34 }
+      },
+      "connect" : [
+        { "id" : "f14", "to" : "f1", "color" : "default", "condition" : "ivp==\"TaskA.ivp\"" }
+      ]
+    } ]
+}
