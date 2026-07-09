@@ -3,7 +3,7 @@
   "id" : "19F42B0082ED8F8C",
   "kind" : "HTML_DIALOG",
   "config" : {
-    "data" : "com.axonivy.connector.onlyoffice.connector.EmbeddingDemo.EmbeddingDemoData"
+    "data" : "com.axonivy.connector.onlyoffice.demo.EmbeddingDemo.EmbeddingDemoData"
   },
   "elements" : [ {
       "id" : "f0",

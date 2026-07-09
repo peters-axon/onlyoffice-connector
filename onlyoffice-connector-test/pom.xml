@@ -2,7 +2,7 @@
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.axonivy.connector.onlyoffice.connector</groupId>
+  <groupId>com.axonivy.connector.onlyoffice</groupId>
   <artifactId>onlyoffice-connector-test</artifactId>
   <version>12.0.16-SNAPSHOT</version>
   <packaging>iar-integration-test</packaging>
@@ -32,7 +32,7 @@
   </repositories>
   <dependencies>
     <dependency>
-      <groupId>com.axonivy.connector.onlyoffice.connector</groupId>
+      <groupId>com.axonivy.connector.onlyoffice</groupId>
       <artifactId>onlyoffice-connector</artifactId>
       <version>${project.version}</version>
       <type>iar</type>

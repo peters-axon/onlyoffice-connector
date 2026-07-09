@@ -1,4 +1,4 @@
-package com.axonivy.connector.onlyoffice.connector;
+package com.axonivy.connector.onlyoffice.demo;
 
 import ch.ivyteam.ivy.environment.Ivy;
 import ch.ivyteam.ivy.workflow.ICase;

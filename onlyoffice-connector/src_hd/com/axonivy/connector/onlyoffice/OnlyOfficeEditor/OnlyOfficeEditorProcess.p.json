@@ -3,7 +3,7 @@
   "id" : "19F42AEF4AF69C3D",
   "kind" : "HTML_DIALOG",
   "config" : {
-    "data" : "com.axonivy.connector.onlyoffice.connector.OnlyOfficeEditor.OnlyOfficeEditorData"
+    "data" : "com.axonivy.connector.onlyoffice.OnlyOfficeEditor.OnlyOfficeEditorData"
   },
   "elements" : [ {
       "id" : "f0",

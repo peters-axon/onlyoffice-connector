@@ -59,12 +59,30 @@
 					</div>
 				</div>
 				<p:spacer height="1em" />
+				<p:outputPanel rendered="#{data.ctrl.selectedDocument == null}">
+					<div class="grid">
+						<div class="col-12 md:col-12 lg:col-12">
+							Please select a document to continue.
+						</div>
+					</div>
+				</p:outputPanel>
+				<p:outputPanel id="editor" rendered="#{data.ctrl.selectedDocument != null}">
+					<div class="grid">
+						<div class="col-12 md:col-12 lg:col-12">
+							Selected: #{data.ctrl.selectedDocument}
+						</div>
+					</div>
+					<div class="grid">
+						<div class="col-12 md:col-12 lg:col-12">
+							
+						</div>
+					</div>
 
-
-				<div class="command-btns">
-					<p:commandLink id="cancel" actionListener="#{ivyWorkflowView.cancel()}" process="@this" value="Cancel" />
-					<p:commandButton id="proceed" actionListener="#{logic.close}" value="Proceed" update="@form" icon="pi pi-check" />
-				</div>
+					<div class="command-btns">
+						<p:commandLink id="cancel" actionListener="#{ivyWorkflowView.cancel()}" process="@this" value="Cancel" />
+						<p:commandButton id="proceed" actionListener="#{logic.close}" value="Proceed" update="@form" icon="pi pi-check" />
+					</div>
+				</p:outputPanel>
 			</h:form>
 
 		</ui:define>

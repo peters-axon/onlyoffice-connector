@@ -3,7 +3,7 @@
   "id" : "19F42AFAD3F57DF1",
   "kind" : "HTML_DIALOG",
   "config" : {
-    "data" : "com.axonivy.connector.onlyoffice.connector.DocumentPreparation.DocumentPreparationData"
+    "data" : "com.axonivy.connector.onlyoffice.demo.DocumentPreparation.DocumentPreparationData"
   },
   "elements" : [ {
       "id" : "f0",
@@ -13,7 +13,7 @@
         "signature" : "start",
         "input" : {
           "map" : {
-            "out.ctrl" : "new com.axonivy.connector.onlyoffice.connector.DocumentSelectionCtrl()"
+            "out.ctrl" : "new com.axonivy.connector.onlyoffice.demo.DocumentPreparationCtrl()"
           }
         },
         "guid" : "19F42AFAD40948AD"

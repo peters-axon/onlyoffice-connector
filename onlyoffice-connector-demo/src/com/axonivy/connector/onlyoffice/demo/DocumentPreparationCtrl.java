@@ -1,4 +1,4 @@
-package com.axonivy.connector.onlyoffice.connector;
+package com.axonivy.connector.onlyoffice.demo;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -19,11 +19,11 @@ import ch.ivyteam.ivy.environment.Ivy;
 import ch.ivyteam.ivy.workflow.document.IDocument;
 import ch.ivyteam.ivy.workflow.document.IDocumentService;
 
-public class DocumentSelectionCtrl {
+public class DocumentPreparationCtrl {
 	Map<String, IDocument> documents = new LinkedHashMap<>();
 	private IDocument selectedDocument;
 
-	public DocumentSelectionCtrl() {
+	public DocumentPreparationCtrl() {
 		updateDocuments();
 	}
 
@@ -57,7 +57,8 @@ public class DocumentSelectionCtrl {
 	}
 
 	public void onRowSelect(SelectEvent<IDocument> event) {
-		this.selectedDocument = selectedDocument;
+		Ivy.log().debug("On row select {0}", event);
+		this.selectedDocument = event.getObject();
 	}
 
 	public StreamedContent getFileData(String name) {
