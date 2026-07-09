@@ -6,7 +6,7 @@ import ch.ivyteam.ivy.environment.Ivy;
 import ch.ivyteam.ivy.workflow.document.IDocumentService;
 
 /**
- * Use documents of current business case. The documentId contains the path.
+ * Use workflow documents.
  */
 public class OnlyOfficeBusinessCaseDocumentHandler implements OnlyOfficeDocumentHandler {
 	private static final OnlyOfficeBusinessCaseDocumentHandler INSTANCE = new OnlyOfficeBusinessCaseDocumentHandler();
@@ -18,13 +18,13 @@ public class OnlyOfficeBusinessCaseDocumentHandler implements OnlyOfficeDocument
 	@Override
 	public OnlyOfficeDocument load(String editGroup, String documentId) {
 		OnlyOfficeDocument document = null;
-		var caseDoc = documents().get(documentId);
-		if(caseDoc != null) {
+		var doc = documents().get(documentId);
+		if(doc != null) {
 			document = OnlyOfficeDocument.builder()
 					.documentId(documentId)
 					.fileName(documentId)
 					.editGroup(editGroup)
-					.stream(caseDoc.read().asStream())
+					.stream(doc.read().asStream())
 					.build();
 		}
 		return document;
@@ -32,14 +32,15 @@ public class OnlyOfficeBusinessCaseDocumentHandler implements OnlyOfficeDocument
 
 	@Override
 	public void save(OnlyOfficeDocument document, boolean last) {
-		var caseDoc = documents().get(document.getDocumentId());
-		if(caseDoc != null) {
-			documents().delete(caseDoc);
+		var doc = documents().get(document.getDocumentId());
+		if(doc != null) {
+			Ivy.log().warn("Document exists: {0}", doc.getName());
+			// documents().delete(doc);
 		}
 		documents().add(document.getDocumentId()).write().withContentFrom(document.getStream());
 	}
 
 	protected IDocumentService documents() {
-		return Ivy.wfCase().getBusinessCase().documents();
+		return Ivy.wf().documents();
 	}
 }

@@ -5,3 +5,4 @@ RestClients:
     Url: http://localhost/
     Features:
     - ch.ivyteam.ivy.rest.client.mapper.JsonFeature
+    - com.axonivy.connector.onlyoffice.OnlyOfficeFeature

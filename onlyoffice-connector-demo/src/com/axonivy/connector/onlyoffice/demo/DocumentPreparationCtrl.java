@@ -83,7 +83,7 @@ public class DocumentPreparationCtrl {
 	}
 
 	public String getConfiguration() {
-		var documentKey = OnlyOfficeService.get().createDocumentKey(selectedDocument.getName(), "12345");
+		var documentKey = OnlyOfficeService.get().createDocumentKey(selectedDocument.uuid(), "12345");
 		var config = OnlyOfficeService.get().createConfigScript(documentKey, selectedDocument.getName());
 		Ivy.log().info("Using configuration: {0}", config);
 		return config;
