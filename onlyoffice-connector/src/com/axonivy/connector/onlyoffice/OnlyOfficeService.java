@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.UUID;
 
 import javax.crypto.SecretKey;
+import javax.faces.bean.ApplicationScoped;
+import javax.faces.bean.ManagedBean;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
@@ -17,6 +19,7 @@ import javax.ws.rs.core.UriBuilder;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
+import com.axonivy.connector.onlyoffice.documenthandler.OnlyOfficeDocumentHandler;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,14 +30,35 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 
+@ManagedBean(name = "onlyoffice")
+@ApplicationScoped
 public class OnlyOfficeService {
 	private static final OnlyOfficeService INSTANCE = new OnlyOfficeService();
 	private static final ObjectMapper MAPPER = new ObjectMapper();
-	private static final String VAR_TMPL = "com.axonivy.connector.onlyoffice.%";
-	private static final UUID CLIENT_ID = UUID.fromString("8ebb698e-6dc2-4bca-938c-231642f4aa6e");
+	private static final String VAR_TMPL = "com.axonivy.connector.onlyoffice.%s";
+	private static final UUID CLIENT_ID = UUID.fromString("37a13dba-9085-4c3b-a2bf-6694927b75de");
+	private OnlyOfficeDocumentHandler onlyOfficeDocumentHandler = new OnlyOfficeDocumentHandler() {
+		@Override
+		public void save(OnlyOfficeDocument document, boolean last) {
+			throw new UnsupportedOperationException("There is no %s set to save document with id '%s'.".formatted(OnlyOfficeDocumentHandler.class.getSimpleName(), document != null ? document.getDocumentId() : null));
+		}
+
+		@Override
+		public OnlyOfficeDocument load(String editGroup, String documentId) {
+			throw new UnsupportedOperationException("There is no %s set to save document with id '%s'.".formatted(OnlyOfficeDocumentHandler.class.getSimpleName(), documentId));
+		}
+	};
 
 	public static OnlyOfficeService get() {
 		return INSTANCE;
+	}
+
+	public void setOnlyOfficeDocumentHandler(OnlyOfficeDocumentHandler onlyOfficeDocumentHandler) {
+		this.onlyOfficeDocumentHandler = onlyOfficeDocumentHandler;
+	}
+
+	public OnlyOfficeDocumentHandler getOnlyOfficeDocumentHandler() {
+		return onlyOfficeDocumentHandler;
 	}
 
 	public WebTarget absolute(String url) {
@@ -60,6 +84,8 @@ public class OnlyOfficeService {
 	public String getVar(String name) {
 		return Ivy.var().get(VAR_TMPL.formatted(name));
 	}
+
+
 
 	public String getDocumentsBaseUrl(String path, Object...values) {
 		var base = documentsBaseUrl();
@@ -226,6 +252,19 @@ public class OnlyOfficeService {
 		}
 		return result;
 	}
+
+	public String signConfig(String config) {
+		var result = "";
+		try {
+			var map = MAPPER.readValue(config, new TypeReference<Map<String, Object>>() {});
+			map.put("token", createToken(map));
+			result = MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(map);
+		} catch (Exception e) {
+			result = ExceptionUtils.getStackTrace(e);
+		}
+		return result;
+	}
+
 
 	public Response callForcesave(String key, String userdata) {
 		var cmd = new LinkedHashMap<String, Object>();
