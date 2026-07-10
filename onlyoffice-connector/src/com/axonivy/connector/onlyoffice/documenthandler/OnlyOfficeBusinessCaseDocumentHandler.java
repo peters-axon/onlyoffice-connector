@@ -33,11 +33,12 @@ public class OnlyOfficeBusinessCaseDocumentHandler implements OnlyOfficeDocument
 	@Override
 	public void save(OnlyOfficeDocument document, boolean last) {
 		var doc = documents().get(document.getDocumentId());
-		if(doc != null) {
-			Ivy.log().warn("Document exists: {0}", doc.getName());
-			// documents().delete(doc);
+		if(doc == null) {
+			Ivy.log().warn("Document does not exists: {0}", document.getDocumentId());
 		}
-		documents().add(document.getDocumentId()).write().withContentFrom(document.getStream());
+		else {
+			doc.write().withContentFrom(document.getStream());
+		}
 	}
 
 	protected IDocumentService documents() {

@@ -15,8 +15,6 @@ import org.primefaces.event.SelectEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
-import com.axonivy.connector.onlyoffice.OnlyOfficeService;
-
 import ch.ivyteam.ivy.environment.Ivy;
 import ch.ivyteam.ivy.workflow.document.IDocument;
 import ch.ivyteam.ivy.workflow.document.IDocumentService;
@@ -83,10 +81,7 @@ public class DocumentPreparationCtrl {
 	}
 
 	public String getConfiguration() {
-		var documentKey = OnlyOfficeService.get().createDocumentKey(selectedDocument.uuid(), "12345");
-		var config = OnlyOfficeService.get().createConfigScript(documentKey, selectedDocument.getName());
-		Ivy.log().info("Using configuration: {0}", config);
-		return config;
+		return DemoService.get().createConfiguration("12345", selectedDocument.uuid(), selectedDocument.getName());
 	}
 
 	protected void updateDocuments() {

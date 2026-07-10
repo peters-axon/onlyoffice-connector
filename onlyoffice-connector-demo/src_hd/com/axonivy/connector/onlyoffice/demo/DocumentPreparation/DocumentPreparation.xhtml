@@ -2,7 +2,7 @@
 	xmlns:ic="http://ivyteam.ch/jsf/component" xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui/extensions">
 <h:body>
 	<ui:composition template="/layouts/frame-10-full-width.xhtml">
-		<ui:define name="title">DocumentSelection</ui:define>
+		<ui:define name="title">Document Selection</ui:define>
 		<ui:define name="content">
 			<ic:com.axonivy.connector.onlyoffice.OnlyOfficeScript />
 			<h:form>
@@ -22,7 +22,7 @@
 					</div>
 				</div>
 				<div class="grid">
-					<div class="col-12 md:col-6 lg:col-4">
+					<div class="col-12 md:col-12 lg:col-12">
 						<p:fileUpload mode="advanced" accept=".pdf,.docx,.xlsx,.pptx" dragDropSupport="true" auto="true" allowTypes="/(\.|\/)(pdf|docx|xlsx|pptx)$/"
 							listener="#{data.ctrl.handleFileUpload}" update="@form" />
 					</div>
@@ -50,7 +50,7 @@
 				</p:outputPanel>
 				<p:outputPanel id="editor" rendered="#{data.ctrl.selectedDocument != null}">
 					<div class="grid">
-						<div class="col-12 md:col-12 lg:col-11" style="height: 800px;">
+						<div class="col-12 md:col-12 lg:col-12" style="height: 800px;">
 							<ic:com.axonivy.connector.onlyoffice.OnlyOfficeEditor configuration="#{data.ctrl.configuration}" />
 						</div>
 					</div>

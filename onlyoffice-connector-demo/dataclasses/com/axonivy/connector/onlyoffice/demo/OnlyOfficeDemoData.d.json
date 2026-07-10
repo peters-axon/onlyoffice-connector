@@ -1,5 +1,10 @@
 {
   "$schema" : "https://json-schema.axonivy.com/data-class/12.0.1/data-class.json",
   "simpleName" : "OnlyOfficeDemoData",
-  "namespace" : "com.axonivy.connector.onlyoffice.demo"
+  "namespace" : "com.axonivy.connector.onlyoffice.demo",
+  "fields" : [ {
+    "name" : "documentId"
+  }, {
+    "name" : "documentName"
+  } ]
 }

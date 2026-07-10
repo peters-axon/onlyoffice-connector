@@ -12,6 +12,9 @@
         "signature" : "onlyOfficeDemo",
         "request" : {
           "name" : "ONLYOFFICE Demo"
+        },
+        "permission" : {
+          "role" : "Author"
         }
       },
       "tags" : [
@@ -53,7 +56,14 @@
       "type" : "DialogCall",
       "name" : "Document preparation",
       "config" : {
-        "dialog" : "com.axonivy.connector.onlyoffice.demo.DocumentPreparation:start()"
+        "dialog" : "com.axonivy.connector.onlyoffice.demo.DocumentPreparation:start()",
+        "output" : {
+          "map" : {
+            "out" : "in",
+            "out.documentId" : "result.document.uuid()",
+            "out.documentName" : "result.document.getName()"
+          }
+        }
       },
       "visual" : {
         "at" : { "x" : 544, "y" : 128 }
@@ -66,9 +76,16 @@
       "type" : "TaskSwitchGateway",
       "config" : {
         "tasks" : [ {
-            "id" : "TaskA"
+            "id" : "TaskA",
+            "name" : "Please rework document <%=in1.documentName%>",
+            "responsible" : {
+              "activator" : "Reviewer"
+            }
           }, {
-            "id" : "TaskB"
+            "id" : "TaskB",
+            "responsible" : {
+              "activator" : "Compliance"
+            }
           } ]
       },
       "visual" : {
@@ -82,9 +99,14 @@
     }, {
       "id" : "f9",
       "type" : "DialogCall",
-      "name" : "Edit document",
+      "name" : "Document rework",
       "config" : {
-        "dialog" : "com.axonivy.connector.onlyoffice.demo.EmbeddingDemo:start()"
+        "dialog" : "com.axonivy.connector.onlyoffice.demo.DocumentRework:start(String)",
+        "call" : {
+          "map" : {
+            "param.documentId" : "in.documentId"
+          }
+        }
       },
       "visual" : {
         "at" : { "x" : 800, "y" : 64 }
@@ -95,9 +117,14 @@
     }, {
       "id" : "f11",
       "type" : "DialogCall",
-      "name" : "Edit document",
+      "name" : "Document rework",
       "config" : {
-        "dialog" : "com.axonivy.connector.onlyoffice.demo.EmbeddingDemo:start()"
+        "dialog" : "com.axonivy.connector.onlyoffice.demo.DocumentRework:start(String)",
+        "call" : {
+          "map" : {
+            "param.documentId" : "in.documentId"
+          }
+        }
       },
       "visual" : {
         "at" : { "x" : 800, "y" : 192 }

@@ -16,6 +16,14 @@
             "out.ctrl" : "new com.axonivy.connector.onlyoffice.demo.DocumentPreparationCtrl()"
           }
         },
+        "result" : {
+          "params" : [
+            { "name" : "document", "type" : "ch.ivyteam.ivy.workflow.document.IDocument", "desc" : "" }
+          ],
+          "map" : {
+            "result.document" : "in.ctrl.selectedDocument"
+          }
+        },
         "guid" : "19F42AFAD40948AD"
       },
       "visual" : {
