@@ -1,17 +1,19 @@
 # ONLYOFFICE Connector
 
-YOUR DESCRIPTION GOES HERE: Please just give a short description here without further headings.
+Es geht darum inline Editieren mit dem ONLYOFFICE Document Server anzubinden.
 
-<!--
-The explanations under "MY-RRODUCT-NAME" are displayed  e.g. for the Connector A-Trust here: https://market.axonivy.com/a-trust#tab-description   
--->
+Ein eigener Handler zum Laden und Speichern von Files kann angelegt und mittels eines Subprocesses mit der Signatur
+
+OnlyOfficeDocumentHandler provideOnlyOfficeDocumentHandler()
+
+angegeben werden und wird dann vom Connecter verwendet.
+
+Der Default Handler arbeitet mit Ivy Dokumenten.
+
 
 ## Demo
 
-Das Demo zeigt Inline Editing
-<!--
-We use all entries under the heading "Demo" for the demo-Tab on our Website, e.g. for the Connector A-Trust here: https://market.axonivy.com/a-trust#tab-demo  
--->
+Im Demo geht es darum, dass eine Person ein Dokument als Autor hochlädt, editiert und selektiert. Danach bekommen jeweils ein Reviewer und ein Compliance Beauftragter die Aufgabe das Dokument zu bearbeiten. Sie können dies gleichzeitig tun.
 
 ## Setup
 
