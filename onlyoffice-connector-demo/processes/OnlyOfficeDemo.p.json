@@ -165,7 +165,7 @@
         }
       },
       "visual" : {
-        "at" : { "x" : 96, "y" : 368 },
+        "at" : { "x" : 176, "y" : 384 },
         "size" : { "width" : 26, "height" : 26 },
         "labelOffset" : { "x" : 35 }
       },
@@ -176,8 +176,24 @@
       "id" : "f21",
       "type" : "CallSubEnd",
       "visual" : {
-        "at" : { "x" : 240, "y" : 368 },
+        "at" : { "x" : 320, "y" : 384 },
         "labelOffset" : { "x" : 13, "y" : 33 }
       }
+    }, {
+      "id" : "f16",
+      "type" : "ProcessAnnotation",
+      "name" : [
+        "A sub-process with this exact signature can be defined anywhere in the current application to provide your own document handler. ",
+        "If you do not define it, a default handler will be used, which loads and saves files from and to ivy documents.",
+        "",
+        "Note: this example sets the default handler - it is just for demonstration."
+      ],
+      "visual" : {
+        "at" : { "x" : 176, "y" : 272 },
+        "size" : { "width" : 304, "height" : 144 }
+      },
+      "connect" : [
+        { "id" : "f17", "to" : "f18" }
+      ]
     } ]
 }

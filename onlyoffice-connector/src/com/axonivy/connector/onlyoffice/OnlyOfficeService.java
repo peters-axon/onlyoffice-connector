@@ -20,6 +20,7 @@ import javax.ws.rs.core.UriBuilder;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
+import com.axonivy.connector.onlyoffice.documenthandler.OnlyOfficeBusinessCaseDocumentHandler;
 import com.axonivy.connector.onlyoffice.documenthandler.OnlyOfficeDocumentHandler;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -60,20 +61,25 @@ public class OnlyOfficeService {
 						.setSignature(ONLYOFFICE_DOCUMENT_PROVIDER_SUBPROCESS_SIGNATURE)
 						.toFilter());
 
+				Object handler = null;
+
 				// Find subprocess
 				if (CollectionUtils.isEmpty(subProcessStartList)) {
-					Ivy.log().error("To use this service you must define a process {0} which returns a specific instance of a {1}.", ONLYOFFICE_DOCUMENT_PROVIDER_SUBPROCESS_SIGNATURE, OnlyOfficeDocumentHandler.class.getCanonicalName());
+					handler = OnlyOfficeBusinessCaseDocumentHandler.get();
+					Ivy.log().info("No process {0} was provided, using default handler.", ONLYOFFICE_DOCUMENT_PROVIDER_SUBPROCESS_SIGNATURE);
 				}
-				var subProcessStart = subProcessStartList.getFirst();
+				else {
+					var subProcessStart = subProcessStartList.getFirst();
 
-				var handler = subProcessStart.call().first();
+					handler = subProcessStart.call().first();
+				}
 
 				if(handler == null) {
 					Ivy.log().error("Did not receive a {0}.", OnlyOfficeDocumentHandler.class.getCanonicalName());
 				}
 				else if(handler instanceof OnlyOfficeDocumentHandler h) {
 					onlyOfficeDocumentHandler = h;
-					Ivy.log().info("Received a {0}: {1}.", OnlyOfficeDocumentHandler.class.getCanonicalName(), handler);
+					Ivy.log().info("Using {0}: {1}.", OnlyOfficeDocumentHandler.class.getCanonicalName(), handler);
 				}
 				else {
 					Ivy.log().error("Did not receive a {0}, instead received: {1}.", OnlyOfficeDocumentHandler.class.getCanonicalName(), handler);
