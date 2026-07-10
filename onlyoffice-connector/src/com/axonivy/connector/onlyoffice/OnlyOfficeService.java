@@ -17,6 +17,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import com.axonivy.connector.onlyoffice.documenthandler.OnlyOfficeDocumentHandler;
@@ -25,6 +26,10 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ch.ivyteam.ivy.environment.Ivy;
+import ch.ivyteam.ivy.process.call.SubProcessCallStart;
+import ch.ivyteam.ivy.process.call.SubProcessSearchFilter;
+import ch.ivyteam.ivy.process.call.SubProcessSearchFilter.SearchScope;
+import ch.ivyteam.ivy.security.exec.Sudo;
 import ch.ivyteam.util.crypto.CryptoUtil;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -37,27 +42,44 @@ public class OnlyOfficeService {
 	private static final ObjectMapper MAPPER = new ObjectMapper();
 	private static final String VAR_TMPL = "com.axonivy.connector.onlyoffice.%s";
 	private static final UUID CLIENT_ID = UUID.fromString("37a13dba-9085-4c3b-a2bf-6694927b75de");
-	private OnlyOfficeDocumentHandler onlyOfficeDocumentHandler = new OnlyOfficeDocumentHandler() {
-		@Override
-		public void save(OnlyOfficeDocument document, boolean last) {
-			throw new UnsupportedOperationException("There is no %s set to save document with id '%s'.".formatted(OnlyOfficeDocumentHandler.class.getSimpleName(), document != null ? document.getDocumentId() : null));
-		}
-
-		@Override
-		public OnlyOfficeDocument load(String editGroup, String documentId) {
-			throw new UnsupportedOperationException("There is no %s set to save document with id '%s'.".formatted(OnlyOfficeDocumentHandler.class.getSimpleName(), documentId));
-		}
-	};
+	private static final String ONLYOFFICE_DOCUMENT_PROVIDER_SUBPROCESS_SIGNATURE = "provideOnlyOfficeDocumentHandler()";
+	private OnlyOfficeDocumentHandler onlyOfficeDocumentHandler = null;
 
 	public static OnlyOfficeService get() {
 		return INSTANCE;
 	}
 
-	public void setOnlyOfficeDocumentHandler(OnlyOfficeDocumentHandler onlyOfficeDocumentHandler) {
-		this.onlyOfficeDocumentHandler = onlyOfficeDocumentHandler;
-	}
-
 	public OnlyOfficeDocumentHandler getOnlyOfficeDocumentHandler() {
+		if(onlyOfficeDocumentHandler == null) {
+			Ivy.log().info("Looking for a process that provides the {0} interface.", OnlyOfficeDocumentHandler.class.getCanonicalName());
+
+			Sudo.run(() -> {
+
+				var subProcessStartList = SubProcessCallStart.find(SubProcessSearchFilter.create()
+						.setSearchScope(SearchScope.APPLICATION)
+						.setSignature(ONLYOFFICE_DOCUMENT_PROVIDER_SUBPROCESS_SIGNATURE)
+						.toFilter());
+
+				// Find subprocess
+				if (CollectionUtils.isEmpty(subProcessStartList)) {
+					Ivy.log().error("To use this service you must define a process {0} which returns a specific instance of a {1}.", ONLYOFFICE_DOCUMENT_PROVIDER_SUBPROCESS_SIGNATURE, OnlyOfficeDocumentHandler.class.getCanonicalName());
+				}
+				var subProcessStart = subProcessStartList.getFirst();
+
+				var handler = subProcessStart.call().first();
+
+				if(handler == null) {
+					Ivy.log().error("Did not receive a {0}.", OnlyOfficeDocumentHandler.class.getCanonicalName());
+				}
+				else if(handler instanceof OnlyOfficeDocumentHandler h) {
+					onlyOfficeDocumentHandler = h;
+					Ivy.log().info("Received a {0}: {1}.", OnlyOfficeDocumentHandler.class.getCanonicalName(), handler);
+				}
+				else {
+					Ivy.log().error("Did not receive a {0}, instead received: {1}.", OnlyOfficeDocumentHandler.class.getCanonicalName(), handler);
+				}
+			});
+		}
 		return onlyOfficeDocumentHandler;
 	}
 
