@@ -18,6 +18,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import com.axonivy.connector.onlyoffice.documenthandler.OnlyOfficeBusinessCaseDocumentHandler;
@@ -178,7 +179,7 @@ public class OnlyOfficeService {
 		permissions.put("modifyContentControl", false);
 
 		var document = new LinkedHashMap<String, Object>();
-		document.put("fileType", "docx");
+		document.put("fileType", FilenameUtils.getExtension(filename));
 		document.put("key", documentKey);
 		document.put("title", filename);
 		document.put("url", getDocumentsBaseUrl("load/{key}", documentKey));
@@ -210,7 +211,7 @@ public class OnlyOfficeService {
 		var payload = new LinkedHashMap<String, Object>();
 		payload.put("document", document);
 		payload.put("editorConfig", editorConfig);
-		payload.put("documentType", "word");
+		// payload.put("documentType", "word");
 
 		return payload;
 	}

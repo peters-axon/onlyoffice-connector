@@ -10,6 +10,7 @@ angegeben werden und wird dann vom Connecter verwendet.
 
 Der Default Handler arbeitet mit Ivy Dokumenten.
 
+https://api.onlyoffice.com/docs/docs-api/usage-api/doceditor/
 
 ## Demo
 

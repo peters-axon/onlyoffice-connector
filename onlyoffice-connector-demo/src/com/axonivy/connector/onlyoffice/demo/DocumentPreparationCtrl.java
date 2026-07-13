@@ -52,7 +52,7 @@ public class DocumentPreparationCtrl {
 	}
 
 	public void setSelectedDocument(IDocument selectedDocument) {
-		Ivy.log().debug("Select document {0}", selectedDocument.getName());
+		Ivy.log().debug("Select document {0}", selectedDocument != null ? selectedDocument.getName() : null);
 		this.selectedDocument = selectedDocument;
 	}
 

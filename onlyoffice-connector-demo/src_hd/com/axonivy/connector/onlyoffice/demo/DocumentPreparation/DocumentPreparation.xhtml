@@ -14,7 +14,9 @@
 				</div>
 				<div class="grid">
 					<div class="col-12 md:col-12 lg:col-12">
-						Documents will be attached to a general business case.
+						Please upload one or more files. ONLYOFFICE supports most common office formats. For a list of supported
+						formats please see <a href="https://api.onlyoffice.com/docs/docs-api/usage-api/config/document/" target="_blank">https://api.onlyoffice.com/docs/docs-api/usage-api/config/document/</a>.
+						In this demo, all documents will be attached to a general business case. 
 						<h:outputText rendered="#{not data.ctrl.businessCasePersistent}" escape="false">
 							<br />
 							<strong> This business case will be created (persisted) the first time you proceed from this dialog. </strong>
@@ -23,7 +25,7 @@
 				</div>
 				<div class="grid">
 					<div class="col-12 md:col-12 lg:col-12">
-						<p:fileUpload mode="advanced" accept=".pdf,.docx,.xlsx,.pptx" dragDropSupport="true" auto="true" allowTypes="/(\.|\/)(pdf|docx|xlsx|pptx)$/"
+						<p:fileUpload mode="advanced" dragDropSupport="true" auto="true"
 							listener="#{data.ctrl.handleFileUpload}" update="@form" />
 					</div>
 				</div>
@@ -35,7 +37,7 @@
 								<h:outputText value="#{doc.name}" />
 							</p:column>
 							<p:column>
-								<p:commandButton value="Download" ajax="false" update="@form">
+								<p:commandButton value="Download" ajax="false">
 									<p:fileDownload value="#{data.ctrl.getFileData(doc.name)}" />
 								</p:commandButton>
 							</p:column>
