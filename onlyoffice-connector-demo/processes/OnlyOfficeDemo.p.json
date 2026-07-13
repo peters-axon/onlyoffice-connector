@@ -168,33 +168,43 @@
       "visual" : {
         "at" : { "x" : 176, "y" : 384 },
         "size" : { "width" : 26, "height" : 26 },
-        "labelOffset" : { "x" : 35 }
+        "labelOffset" : { "x" : 35 },
+        "color" : "optional"
       },
       "connect" : [
-        { "id" : "f20", "to" : "f21" }
+        { "id" : "f20", "to" : "f21", "color" : "optional" }
       ]
     }, {
       "id" : "f21",
       "type" : "CallSubEnd",
       "visual" : {
         "at" : { "x" : 320, "y" : 384 },
-        "labelOffset" : { "x" : 13, "y" : 33 }
+        "labelOffset" : { "x" : 13, "y" : 33 },
+        "color" : "optional"
       }
     }, {
       "id" : "f16",
       "type" : "ProcessAnnotation",
       "name" : [
+        "Optional:",
+        "",
         "A sub-process with this exact signature can be defined anywhere in the current application to provide your own document handler. ",
         "If you do not define it, a default handler will be used, which loads and saves files from and to ivy documents.",
         "",
         "Note: this example sets the default handler - it is just for demonstration."
       ],
       "visual" : {
-        "at" : { "x" : 176, "y" : 272 },
-        "size" : { "width" : 304, "height" : 144 }
+        "at" : { "x" : 176, "y" : 276 },
+        "size" : { "width" : 304, "height" : 152 },
+        "color" : "optional"
       },
       "connect" : [
-        { "id" : "f17", "to" : "f18" }
+        { "id" : "f17", "to" : "f18", "color" : "optional" }
       ]
-    } ]
+    } ],
+  "layout" : {
+    "colors" : {
+      "optional" : "#0071c7"
+    }
+  }
 }
