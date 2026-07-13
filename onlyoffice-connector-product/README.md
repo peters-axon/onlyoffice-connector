@@ -19,8 +19,6 @@ Im Demo geht es darum, dass eine Person ein Dokument als Autor hochlädt, editie
 
 Zuerst muss man den ONLYOFFICE Document Server starten. Dazu gibt es im extra Projekt ein docker compose Setup. Natürlich kann man auch die Standalone Installation direkt bei ONLYOFFICE herunterladen. Das Passwort im Setup muss auch in einer globalen Variable eingetragen werden.
 
-CSRF muss abgeschaltet sein.
-
 ONLYOFFICE muss beim Laden der Seite geladen werden (es darf also kein conditional rendering der script Komponente geben).
 
 ```

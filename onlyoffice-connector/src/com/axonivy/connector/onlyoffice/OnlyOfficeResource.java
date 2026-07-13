@@ -1,6 +1,7 @@
 package com.axonivy.connector.onlyoffice;
 
 import java.io.InputStream;
+import java.util.Set;
 
 import javax.annotation.security.PermitAll;
 import javax.servlet.http.HttpServletRequest;
@@ -20,6 +21,22 @@ import ch.ivyteam.ivy.environment.Ivy;
 
 @Path("/documents")
 public class OnlyOfficeResource {
+	/**
+	 * Paths which will not require the X-Requested-By header.
+	 */
+	private static final Set<String> CSRF_EXCEPTIONS = Set.of(
+			"/documents/save"
+			);
+
+	/**
+	 * Paths which will not require the X-Requested-By header.
+	 *
+	 * @param pathInfo
+	 * @return
+	 */
+	public static boolean isCsrfException(String pathInfo) {
+		return CSRF_EXCEPTIONS.contains(pathInfo);
+	}
 
 	@GET
 	@Path("load/{key}")
