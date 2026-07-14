@@ -1,7 +1,5 @@
 package com.axonivy.connector.onlyoffice.demo;
 
-import com.axonivy.connector.onlyoffice.OnlyOfficeService;
-
 import ch.ivyteam.ivy.environment.Ivy;
 import ch.ivyteam.ivy.workflow.ICase;
 import ch.ivyteam.ivy.workflow.query.CaseQuery;
@@ -22,6 +20,7 @@ public class DemoService {
 		if(bCase == null) {
 			Ivy.log().debug("Creating demo business case: {0}", iCase);
 			iCase.customFields().textField("DEMO").set("Demo Case");
+			iCase.customFields().numberField("EDIT_GROUP").set(0);
 			bCase = iCase;
 		}
 		else {
@@ -32,10 +31,4 @@ public class DemoService {
 		return null;
 	}
 
-	public String createConfiguration(String documentEditGroup, String documentId, String documentName) {
-		var documentKey = OnlyOfficeService.get().createDocumentKey(documentEditGroup, documentId);
-		var config = OnlyOfficeService.get().createConfigScript(documentKey, documentName);
-		Ivy.log().info("Using configuration: {0}", config);
-		return config;
-	}
 }

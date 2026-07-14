@@ -15,51 +15,30 @@
 						<h1>Prepare documents</h1>
 					</div>
 				</div>
-				<div class="grid">
-					<div class="col-12 md:col-12 lg:col-12">
-						Please upload one or more files. ONLYOFFICE supports most common office formats. For a list of supported
-						formats please see <a href="https://api.onlyoffice.com/docs/docs-api/usage-api/config/document/" target="_blank">https://api.onlyoffice.com/docs/docs-api/usage-api/config/document/</a>.
-						In this demo, all documents will be attached to a general business case. 
-						<h:outputText rendered="#{not data.ctrl.businessCasePersistent}" escape="false">
-							<br />
-							<strong> This business case will be created (persisted) the first time you proceed from this dialog. </strong>
-						</h:outputText>
-					</div>
-				</div>
-				<div class="grid">
-					<div class="col-12 md:col-12 lg:col-12">
-						<p:fileUpload mode="advanced" dragDropSupport="true" auto="true"
-							listener="#{data.ctrl.handleFileUpload}" update="@form" />
-					</div>
-				</div>
-				<div class="grid">
-					<div class="col-12 md:col-12 lg:col-12">
-						<p:dataTable value="#{data.ctrl.documents}" var="doc" selectionMode="single" selection="#{data.ctrl.selectedDocument}" rowKey="#{doc.name}">
-							<p:ajax event="rowSelect" update="@form" />
-							<p:column headerText="Name">
-								<h:outputText value="#{doc.name}" />
-							</p:column>
-							<p:column>
-								<p:commandButton value="Download" ajax="false">
-									<p:fileDownload value="#{data.ctrl.getFileData(doc.name)}" />
-								</p:commandButton>
-							</p:column>
-						</p:dataTable>
-					</div>
-				</div>
-				<p:spacer height="1em" />
-				<p:outputPanel rendered="#{data.ctrl.selectedDocument == null}">
+				<p:outputPanel rendered="#{data.ctrl.document == null}">
 					<div class="grid">
-						<div class="col-12 md:col-12 lg:col-12">Please select a document to continue.</div>
+						<div class="col-12 md:col-12 lg:col-4"/>
+						<div class="col-12 md:col-12 lg:col-4">
+							Please upload a file. ONLYOFFICE supports most common office formats. For a list of supported
+							formats please see <a href="https://api.onlyoffice.com/docs/docs-api/usage-api/config/document/" target="_blank">https://api.onlyoffice.com/docs/docs-api/usage-api/config/document/</a>.
+							In this demo, all documents will be attached to a general business case. 
+						</div>
+					</div>
+					<div class="grid">
+						<div class="col-12 md:col-12 lg:col-4"/>
+						<div class="col-12 md:col-12 lg:col-4">
+							<p:fileUpload mode="advanced" dragDropSupport="true" auto="true"
+								listener="#{data.ctrl.handleFileUpload}" update="@form" />
+						</div>
 					</div>
 				</p:outputPanel>
-				<p:outputPanel id="editor" rendered="#{data.ctrl.selectedDocument != null}">
+				<p:outputPanel rendered="#{data.ctrl.document != null}">
 					<div class="grid">
 						<div class="col-12 md:col-12 lg:col-12" style="height: 800px;">
 							<ic:com.axonivy.connector.onlyoffice.OnlyOfficeEditor
 								editGroup="#{data.ctrl.editGroup}"
-								documentId="#{data.ctrl.selectedDocument.uuid()}"
-								fileName="#{data.ctrl.selectedDocument.name}" />
+								documentId="#{data.ctrl.document.uuid()}"
+								fileName="#{data.ctrl.document.name}" />
 						</div>
 					</div>
 					<div class="command-btns">

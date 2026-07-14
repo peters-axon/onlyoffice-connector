@@ -1,99 +1,44 @@
 package com.axonivy.connector.onlyoffice.demo;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.stream.Collectors;
 
-import javax.faces.application.FacesMessage;
-
-import org.primefaces.context.PrimeFacesContext;
 import org.primefaces.event.FileUploadEvent;
-import org.primefaces.event.SelectEvent;
-import org.primefaces.model.DefaultStreamedContent;
-import org.primefaces.model.StreamedContent;
 
 import ch.ivyteam.ivy.environment.Ivy;
 import ch.ivyteam.ivy.workflow.document.IDocument;
 import ch.ivyteam.ivy.workflow.document.IDocumentService;
 
 public class DocumentPreparationCtrl {
-	Map<String, IDocument> documents = new LinkedHashMap<>();
 	private String editGroup;
-	private IDocument selectedDocument;
+	private IDocument document;
 
 	public DocumentPreparationCtrl(String editGroup) {
 		this.editGroup = editGroup;
-		updateDocuments();
-	}
-
-	public Collection<IDocument> getDocuments() {
-		return documents.values();
 	}
 
 	public String getEditGroup() {
 		return editGroup;
 	}
 
+	public IDocument getDocument() {
+		return document;
+	}
+
 	public void handleFileUpload(FileUploadEvent event) throws IOException {
 		var uploaded = event.getFile();
 		var name = uploaded.getFileName();
 
-		updateDocuments();
+		document = documents().get(name);
 
-		var old = documents.get(name);
-		if(old != null) {
-			documents().delete(old);
+		if(document == null) {
+			document = documents().add(name);
 		}
 
-		documents().add(name).write().withContentFrom(uploaded.getInputStream());
-
-		updateDocuments();
-	}
-
-	public IDocument getSelectedDocument() {
-		return selectedDocument;
-	}
-
-	public void setSelectedDocument(IDocument selectedDocument) {
-		Ivy.log().debug("Select document {0}", selectedDocument != null ? selectedDocument.getName() : null);
-		this.selectedDocument = selectedDocument;
-	}
-
-	public void onRowSelect(SelectEvent<IDocument> event) {
-		Ivy.log().debug("On row select {0}", event);
-		this.selectedDocument = event.getObject();
-	}
-
-	public StreamedContent getFileData(String name) {
-		StreamedContent result = null;
-		var doc = documents.get(name);
-		if(doc == null) {
-			PrimeFacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Could not find document '%s'".formatted(name)));
-		}
-		else {
-			result = DefaultStreamedContent.builder()
-					.stream(() -> doc.read().asStream())
-					.name(doc.getName())
-					.build();
-		}
-		return result;
-	}
-
-	public boolean isBusinessCasePersistent() {
-		return Ivy.wfCase().getBusinessCase().isPersistent();
-	}
-
-	protected void updateDocuments() {
-		documents = documents().getAll().stream()
-				.sorted(Comparator.comparing(IDocument::getName))
-				.collect(Collectors.toMap(IDocument::getName, d -> d, (o, n) -> n, LinkedHashMap::new));
+		document.write().withContentFrom(uploaded.getInputStream());
 	}
 
 	protected IDocumentService documents() {
-		return Ivy.wfCase().getBusinessCase().documents();
+		return Ivy.wfCase().documents();
 	}
 }
 
