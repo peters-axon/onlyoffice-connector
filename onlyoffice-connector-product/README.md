@@ -16,6 +16,12 @@ Erklärung Konfiguration wird mit dynamischem Content überschrieben sofern der 
 
 Vermeide, dasselbe Dokument mit derselben editGroup im selben Editor zweimal hintereinander zu öffnen.
 
+Erklärung, dass Save standardmäßig asynchron und automatisch erst nach dem Verlassen der Seite stattfindet, man aber über die Editor Config das autosave auch abschalten kann.
+
+editorConfig.customization.autosave auf false und
+editorConfig.customization.forcesave auf true
+
+
 ## Demo
 
 Im Demo geht es darum, dass eine Person ein Dokument als Autor hochlädt, editiert und selektiert. Danach bekommen jeweils ein Reviewer und ein Compliance Beauftragter die Aufgabe das Dokument zu bearbeiten. Sie können dies gleichzeitig tun.

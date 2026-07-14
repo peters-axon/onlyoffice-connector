@@ -45,7 +45,7 @@ public class OnlyOfficeResource {
 	public Response loadDocument(@Context HttpServletRequest rq, @PathParam("key") String key) {
 		var dei = OnlyOfficeService.get().extractDocumentEditId(key);
 		var documentId = dei.documentId();
-		Ivy.log().info("Load Document: {0}", documentId);
+		Ivy.log().debug("Load call for document: {0}", documentId);
 
 		var doc = OnlyOfficeService.get().getOnlyOfficeDocumentHandler().load(dei.editGroup(), dei.documentId());
 
@@ -65,7 +65,7 @@ public class OnlyOfficeResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response saveDocument(@Context HttpServletRequest rq, JsonNode payload) {
-		Ivy.log().info("Save Document: {0}", payload);
+		Ivy.log().debug("Save call for document: {0}", payload);
 
 		try {
 			var status = payload.get("status").asInt();

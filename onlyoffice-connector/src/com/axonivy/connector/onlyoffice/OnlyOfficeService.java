@@ -143,10 +143,6 @@ public class OnlyOfficeService {
 				.toString();
 	}
 
-	public WebTarget command() {
-		return documentServerInternal("command");
-	}
-
 	public String createToken(Map<String, Object> config) {
 		var secret = onlyOfficeJwtsecret();
 		SecretKey key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
@@ -206,11 +202,26 @@ public class OnlyOfficeService {
 		}
 	}
 
+	/**
+	 * Call an internal Document Service command.
+	 *
+	 * @return
+	 */
+	public WebTarget command() {
+		return documentServerInternal("command");
+	}
+
+	/**
+	 * Call forcesave.
+	 *
+	 * @param key
+	 * @param userdata
+	 * @return
+	 */
 	public Response callForcesave(String key, String userdata) {
 		var cmd = new LinkedHashMap<String, Object>();
 		cmd.put("c", "forcesave");
 		cmd.put("key", key);
-		cmd.put("vkey", UUID.randomUUID().toString());
 		cmd.put("userdata", userdata);
 
 		var token = createToken(cmd);
@@ -273,7 +284,7 @@ public class OnlyOfficeService {
 	 * @param params
 	 */
 	@SuppressWarnings("unchecked")
-	public void putIfAbsent(Map<String, Object> map, String...params) {
+	public void putIfAbsent(Map<String, Object> map, Object...params) {
 		if(params.length < 2) {
 			throw new IllegalArgumentException("Need at least a key and a value parameter, got %d.".formatted(params.length));
 		}
@@ -286,7 +297,7 @@ public class OnlyOfficeService {
 		var idx = 0;
 		var curMap = map;
 		while(idx < path.size()) {
-			var key = path.get(idx);
+			var key = path.get(idx).toString();
 			var val = curMap.get(key);
 			if(idx < path.size() - 1) {
 				// Not the last path component.
