@@ -4,6 +4,9 @@
 	<ui:composition template="/layouts/frame-10-full-width.xhtml">
 		<ui:define name="title">Document Selection</ui:define>
 		<ui:define name="content">
+			<script>
+   				window.isWorkingOnATask = false;
+			</script>
 			<ic:com.axonivy.connector.onlyoffice.OnlyOfficeScript />
 			<h:form>
 				<p:growl />
@@ -53,7 +56,10 @@
 				<p:outputPanel id="editor" rendered="#{data.ctrl.selectedDocument != null}">
 					<div class="grid">
 						<div class="col-12 md:col-12 lg:col-12" style="height: 800px;">
-							<ic:com.axonivy.connector.onlyoffice.OnlyOfficeEditor configuration="#{data.ctrl.configuration}" />
+							<ic:com.axonivy.connector.onlyoffice.OnlyOfficeEditor
+								editGroup="#{data.ctrl.editGroup}"
+								documentId="#{data.ctrl.selectedDocument.uuid()}"
+								fileName="#{data.ctrl.selectedDocument.name}" />
 						</div>
 					</div>
 					<div class="command-btns">

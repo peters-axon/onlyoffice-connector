@@ -33,7 +33,7 @@ public class DemoService {
 	}
 
 	public String createConfiguration(String documentEditGroup, String documentId, String documentName) {
-		var documentKey = OnlyOfficeService.get().createDocumentKey(documentId, documentEditGroup);
+		var documentKey = OnlyOfficeService.get().createDocumentKey(documentEditGroup, documentId);
 		var config = OnlyOfficeService.get().createConfigScript(documentKey, documentName);
 		Ivy.log().info("Using configuration: {0}", config);
 		return config;

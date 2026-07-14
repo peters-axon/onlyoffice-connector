@@ -12,6 +12,8 @@ Der Default Handler arbeitet mit Ivy Dokumenten.
 
 https://api.onlyoffice.com/docs/docs-api/usage-api/doceditor/
 
+Erklärung Konfiguration wird mit dynamischem Content überschrieben sofern der nicht vorhanden ist.
+
 ## Demo
 
 Im Demo geht es darum, dass eine Person ein Dokument als Autor hochlädt, editiert und selektiert. Danach bekommen jeweils ein Reviewer und ein Compliance Beauftragter die Aufgabe das Dokument zu bearbeiten. Sie können dies gleichzeitig tun.

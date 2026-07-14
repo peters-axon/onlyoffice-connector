@@ -1,10 +1,12 @@
 package com.axonivy.connector.onlyoffice;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
@@ -19,6 +21,7 @@ import javax.ws.rs.core.UriBuilder;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import com.axonivy.connector.onlyoffice.documenthandler.OnlyOfficeBusinessCaseDocumentHandler;
@@ -171,9 +174,9 @@ public class OnlyOfficeService {
 		var permissions = new LinkedHashMap<String, Object>();
 		permissions.put("edit", true);
 		permissions.put("review", true);
-		permissions.put("download", false);
-		permissions.put("print", false);
-		permissions.put("copy", false);
+		permissions.put("download", true);
+		permissions.put("print", true);
+		permissions.put("copy", true);
 		permissions.put("fillForms", true);
 		permissions.put("modifyFilter", false);
 		permissions.put("modifyContentControl", false);
@@ -230,12 +233,12 @@ public class OnlyOfficeService {
 
 	/**
 	 * Create a document key for the document.
-	 *
-	 * @param id
 	 * @param editGroup any identifier, all edits in this group can occur in parallel.
+	 * @param id
+	 *
 	 * @return
 	 */
-	public String createDocumentKey(String documentId, String editGroup) {
+	public String createDocumentKey(String editGroup, String documentId) {
 		try {
 			var key = MAPPER.writeValueAsString(DocumentEditId.create(documentId, editGroup).toList());
 			var enc = CryptoUtil.encrypt(key);
@@ -308,4 +311,104 @@ public class OnlyOfficeService {
 		return command().request().buildPost(Entity.entity(node, MediaType.APPLICATION_JSON)).invoke();
 	}
 
+	/**
+	 * Parse a given configuration and set the typical dynamic information.
+	 *
+	 * This includes information about the file and edit group, the user and the signed token.
+	 * Whatever is already set, will stay, so it is possible to set your own data, e.g. for the user.
+	 *
+	 * For a list of configuration items, see https://api.onlyoffice.com/docs/docs-api/usage-api/config/document/
+	 * or the comments at the beginning of the ONLYOFFICE editor Javascript.
+	 * @param editGroup
+	 * @param documentId
+	 * @param fileName
+	 * @param configuration
+	 *
+	 * @return
+	 */
+	public String putIfAbsentAndSign(String editGroup, String documentId, String fileName, String configuration) {
+		var result = "";
+		try {
+			var ivyUser = Ivy.session().getSessionUser();
+			var lang = ivyUser.getLanguage();
+			if(lang == null) {
+				lang = Locale.getDefault();
+			}
+
+			var documentKey = createDocumentKey(editGroup, documentId);
+			var map = StringUtils.isNotBlank(configuration) ? MAPPER.readValue(configuration, new TypeReference<Map<String, Object>>() {}) : new LinkedHashMap<String, Object>();
+
+			putIfAbsent(map, "document", "fileType", FilenameUtils.getExtension(fileName));
+			putIfAbsent(map, "document", "key", documentKey);
+			putIfAbsent(map, "document", "title", fileName);
+			putIfAbsent(map, "document", "url", getDocumentsBaseUrl("load/{key}", documentKey));
+			putIfAbsent(map, "editorConfig", "callbackUrl", getDocumentsBaseUrl("save"));
+			putIfAbsent(map, "editorConfig", "lang", lang.getLanguage());
+			putIfAbsent(map, "editorConfig", "user", "id", ivyUser.getSecurityMemberId());
+			putIfAbsent(map, "editorConfig", "user", "name", ivyUser.getDisplayName());
+			putIfAbsent(map, "token", createToken(map));
+
+			result = MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(map);
+		} catch (Exception e) {
+			Ivy.log().error("An error occured while creating an ONLYOFFICE configuration for editGroup: ''{0}'' documentId: ''{1}'' fileName: ''{2}'' configuration: ''{3}''",
+					e, editGroup, documentId, fileName, configuration);
+			result = e.getMessage();
+		}
+		return result;
+	}
+
+	/**
+	 * Put the entry into a maps hierarchy and create missing maps.
+	 *
+	 * @param map
+	 * @param params
+	 */
+	@SuppressWarnings("unchecked")
+	public void putIfAbsent(Map<String, Object> map, String...params) {
+		if(params.length < 2) {
+			throw new IllegalArgumentException("Need at least a key and a value parameter, got %d.".formatted(params.length));
+		}
+
+		var p = Arrays.asList(params);
+
+		var value = p.getLast();
+		var path = p.subList(0, p.size() - 1);
+
+		var idx = 0;
+		var curMap = map;
+		while(idx < path.size()) {
+			var key = path.get(idx);
+			var val = curMap.get(key);
+			if(idx < path.size() - 1) {
+				// Not the last path component.
+				if(val == null || StringUtils.isBlank(val.toString())) {
+					var newMap = new LinkedHashMap<String, Object>();
+					curMap.put(key, newMap);
+					curMap = newMap;
+				}
+				else {
+					curMap = (Map<String, Object>) val;
+				}
+			}
+			else {
+				// Last path component.
+				if(val == null) {
+					curMap.putIfAbsent(key, value);
+				}
+			}
+			idx++;
+		}
+	}
+
+	public static void main(String[] args) {
+		var map = new LinkedHashMap<String, Object>();
+
+		var svc = OnlyOfficeService.get();
+
+		svc.putIfAbsent(map, "docx", "document", "fileType");
+		svc.putIfAbsent(map, "test.docs", "document", "title");
+		svc.putIfAbsent(map, "User1", "editorConfig", "user", "id");
+
+		System.out.println("Map: %s".formatted(map));
+	}
 }

@@ -21,14 +21,20 @@ import ch.ivyteam.ivy.workflow.document.IDocumentService;
 
 public class DocumentPreparationCtrl {
 	Map<String, IDocument> documents = new LinkedHashMap<>();
+	private String editGroup;
 	private IDocument selectedDocument;
 
-	public DocumentPreparationCtrl() {
+	public DocumentPreparationCtrl(String editGroup) {
+		this.editGroup = editGroup;
 		updateDocuments();
 	}
 
 	public Collection<IDocument> getDocuments() {
 		return documents.values();
+	}
+
+	public String getEditGroup() {
+		return editGroup;
 	}
 
 	public void handleFileUpload(FileUploadEvent event) throws IOException {
@@ -78,10 +84,6 @@ public class DocumentPreparationCtrl {
 
 	public boolean isBusinessCasePersistent() {
 		return Ivy.wfCase().getBusinessCase().isPersistent();
-	}
-
-	public String getConfiguration() {
-		return DemoService.get().createConfiguration("12345", selectedDocument.uuid(), selectedDocument.getName());
 	}
 
 	protected void updateDocuments() {

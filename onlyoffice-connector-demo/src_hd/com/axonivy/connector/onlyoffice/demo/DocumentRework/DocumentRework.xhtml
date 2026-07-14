@@ -19,7 +19,18 @@
 						</p:outputPanel>
 						<p:outputPanel rendered="#{data.document != null}">
 							<div style="height: 800px">
-								<ic:com.axonivy.connector.onlyoffice.OnlyOfficeEditor configuration="#{data.configuration}" />
+								<ic:com.axonivy.connector.onlyoffice.OnlyOfficeEditor
+									editGroup="#{data.editGroup}"
+									documentId="#{data.documentId}"
+									fileName="#{data.document.name}" 
+									configuration='{
+										"document": {
+											"permissions": {
+												"chat": true
+											}
+										}
+									}
+								'/>
 							</div>
 						</p:outputPanel>
 					</div>

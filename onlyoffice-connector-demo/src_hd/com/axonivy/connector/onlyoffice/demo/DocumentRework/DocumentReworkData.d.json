@@ -3,11 +3,11 @@
   "simpleName" : "DocumentReworkData",
   "namespace" : "com.axonivy.connector.onlyoffice.demo.DocumentRework",
   "fields" : [ {
-    "name" : "document",
-    "type" : "ch.ivyteam.ivy.workflow.document.IDocument"
+    "name" : "editGroup"
   }, {
     "name" : "documentId"
   }, {
-    "name" : "configuration"
+    "name" : "document",
+    "type" : "ch.ivyteam.ivy.workflow.document.IDocument"
   } ]
 }

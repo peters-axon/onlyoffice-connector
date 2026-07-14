@@ -37,12 +37,17 @@
     }, {
       "id" : "f3",
       "type" : "Script",
-      "name" : "Prepare case",
+      "name" : "Prepare",
       "config" : {
         "output" : {
           "code" : [
             "import com.axonivy.connector.onlyoffice.demo.DemoService;",
-            "DemoService.get().assertBusinessCase();"
+            "",
+            "// Prepare business case.",
+            "DemoService.get().assertBusinessCase();",
+            "",
+            "// Define edit group for simultaneous edits.",
+            "in.editGroup = \"1\";"
           ]
         }
       },
@@ -57,12 +62,17 @@
       "type" : "DialogCall",
       "name" : "Document preparation",
       "config" : {
-        "dialog" : "com.axonivy.connector.onlyoffice.demo.DocumentPreparation:start()",
+        "dialog" : "com.axonivy.connector.onlyoffice.demo.DocumentPreparation:start(String)",
+        "call" : {
+          "map" : {
+            "param.editGroup" : "in.editGroup"
+          }
+        },
         "output" : {
           "map" : {
             "out" : "in",
             "out.documentId" : "result.document.uuid()",
-            "out.documentName" : "result.document.getName()"
+            "out.fileName" : "result.document.getName()"
           }
         }
       },
@@ -78,13 +88,13 @@
       "config" : {
         "tasks" : [ {
             "id" : "TaskA",
-            "name" : "Please rework document <%=in1.documentName%>",
+            "name" : "Please rework document <%=in1.fileName%>",
             "responsible" : {
               "activator" : "Reviewer"
             }
           }, {
             "id" : "TaskB",
-            "name" : "Please rework document <%=in1.documentName%>",
+            "name" : "Please rework document <%=in1.fileName%>",
             "responsible" : {
               "activator" : "Compliance"
             }
@@ -103,9 +113,10 @@
       "type" : "DialogCall",
       "name" : "Document rework",
       "config" : {
-        "dialog" : "com.axonivy.connector.onlyoffice.demo.DocumentRework:start(String)",
+        "dialog" : "com.axonivy.connector.onlyoffice.demo.DocumentRework:start(String,String)",
         "call" : {
           "map" : {
+            "param.editGroup" : "in.editGroup",
             "param.documentId" : "in.documentId"
           }
         }
@@ -121,9 +132,10 @@
       "type" : "DialogCall",
       "name" : "Document rework",
       "config" : {
-        "dialog" : "com.axonivy.connector.onlyoffice.demo.DocumentRework:start(String)",
+        "dialog" : "com.axonivy.connector.onlyoffice.demo.DocumentRework:start(String,String)",
         "call" : {
           "map" : {
+            "param.editGroup" : "in.editGroup",
             "param.documentId" : "in.documentId"
           }
         }

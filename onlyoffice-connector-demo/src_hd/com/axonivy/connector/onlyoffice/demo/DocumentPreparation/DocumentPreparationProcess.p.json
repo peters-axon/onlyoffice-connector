@@ -8,12 +8,15 @@
   "elements" : [ {
       "id" : "f0",
       "type" : "HtmlDialogStart",
-      "name" : "start()",
+      "name" : "start(String)",
       "config" : {
         "signature" : "start",
         "input" : {
+          "params" : [
+            { "name" : "editGroup", "type" : "String", "desc" : "" }
+          ],
           "map" : {
-            "out.ctrl" : "new com.axonivy.connector.onlyoffice.demo.DocumentPreparationCtrl()"
+            "out.ctrl" : "new com.axonivy.connector.onlyoffice.demo.DocumentPreparationCtrl(param.editGroup)"
           }
         },
         "result" : {

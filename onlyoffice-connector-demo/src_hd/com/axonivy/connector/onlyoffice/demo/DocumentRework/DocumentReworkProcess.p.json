@@ -8,15 +8,17 @@
   "elements" : [ {
       "id" : "f0",
       "type" : "HtmlDialogStart",
-      "name" : "start(String)",
+      "name" : "start(String,String)",
       "config" : {
         "signature" : "start",
         "input" : {
           "params" : [
+            { "name" : "editGroup", "type" : "String", "desc" : "" },
             { "name" : "documentId", "type" : "String", "desc" : "uuid of document" }
           ],
           "map" : {
-            "out.documentId" : "param.documentId"
+            "out.documentId" : "param.documentId",
+            "out.editGroup" : "param.editGroup"
           }
         },
         "guid" : "19F42B008309500F"
@@ -62,11 +64,7 @@
         "output" : {
           "code" : [
             "import com.axonivy.connector.onlyoffice.demo.DemoService;",
-            "out.document = ivy.wf.documents().get(in.documentId);",
-            "",
-            "if(out.#document != null) {",
-            "  out.configuration = DemoService.get().createConfiguration(\"12345\", out.document.uuid(), out.document.getName());",
-            "}"
+            "out.document = ivy.wf.documents().get(in.documentId);"
           ]
         },
         "sudo" : true
