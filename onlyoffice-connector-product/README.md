@@ -1,39 +1,56 @@
 # ONLYOFFICE Connector
 
-Es geht darum inline Editieren mit dem ONLYOFFICE Document Server anzubinden.
+The ONLYOFFICE Connector enables inline editing by integrating the ONLYOFFICE Document Server into Axon Ivy. The purpose is to allow users to edit documents directly inside the application workflow without leaving the process context.
 
-Ein eigener Handler zum Laden und Speichern von Files kann angelegt und mittels eines Subprocesses mit der Signatur
+A custom handler for loading and saving files can be created and registered through a subprocess using the signature:
 
 OnlyOfficeDocumentHandler provideOnlyOfficeDocumentHandler()
 
-angegeben werden und wird dann vom Connecter verwendet.
+This handler is then consumed by the connector. The default handler works with Ivy documents.
 
-Der Default Handler arbeitet mit Ivy Dokumenten.
-
+For reference, the implementation is based on the ONLYOFFICE document editor API:
 https://api.onlyoffice.com/docs/docs-api/usage-api/doceditor/
 
-Erklärung Konfiguration wird mit dynamischem Content überschrieben sofern der nicht vorhanden ist.
+The configuration can be overridden by dynamic content whenever the dynamic content is not available. This makes it possible to adapt the editor configuration to runtime-specific requirements.
 
-Vermeide, dasselbe Dokument mit derselben editGroup im selben Editor zweimal hintereinander zu öffnen.
+Avoid opening the same document with the same `editGroup` in the same editor twice in a row. Reusing the same editor context for the same document can lead to inconsistent behavior.
 
-Erklärung, dass Save standardmäßig asynchron und automatisch erst nach dem Verlassen der Seite stattfindet, man aber über die Editor Config das autosave auch abschalten kann.
+Saving is asynchronous by default and is usually executed only after the page is left. However, the editor configuration can be used to disable autosave and enable forcesave:
 
-editorConfig.customization.autosave auf false und
-editorConfig.customization.forcesave auf true
+```text
+editorConfig.customization.autosave = false
+editorConfig.customization.forcesave = true
+```
 
-Hinweis, dass Ändern, Schließen und danach wieder öffnen eines Dokumentes im selben Browser eventuell eine neue Version des Dokumentes am Server erzeugt und somit im Browser zu einem Fehler führt.
+Note that changing, closing, and then reopening the same document in the same browser may cause a new server-side version of the document to be created. This can then lead to an error in the browser when the previous editor state is reused.
 
 
 
 ## Demo
 
-Im Demo geht es darum, dass eine Person ein Dokument als Autor hochlädt, editiert und selektiert. Danach bekommen jeweils ein Reviewer und ein Compliance Beauftragter die Aufgabe das Dokument zu bearbeiten. Sie können dies gleichzeitig tun.
+The demo shows a collaboration scenario in which one user uploads a document as the author, edits it, and selects it for the next step. Afterwards, a reviewer and a compliance officer each receive a task to work on the document. They can perform their updates simultaneously.
+
+![Select document](images/01_select_document.png)
+
+The process starts with selecting the document from the Axon Ivy workflow context. The user chooses the file that should be opened in the ONLYOFFICE editor.
+
+![Edit document](images/02_edit_document.png)
+
+Once the document is opened, the user can edit it directly in the integrated editor. This is the central benefit of the connector: document editing happens inline within the business process, without breaking the user flow.
+
+![Rework tasks](images/03_rework_tasks.png)
+
+After the author completes the initial editing step, the document is handed over to the next participants. A reviewer and a compliance representative each receive the relevant task and continue the same workflow with the same document.
+
+![Simultaneous editing](images/04_simultaneous_editing.png)
+
+The demo highlights the core collaboration model of the connector: multiple users can work on the same document at the same time, which supports parallel review and rework inside one end-to-end process.
 
 ## Setup
 
-Zuerst muss man den ONLYOFFICE Document Server starten. Dazu gibt es im extra Projekt ein docker compose Setup. Natürlich kann man auch die Standalone Installation direkt bei ONLYOFFICE herunterladen. Das Passwort im Setup muss auch in einer globalen Variable eingetragen werden.
+First, the ONLYOFFICE Document Server must be started. A docker-compose setup is available in the separate project for this purpose. Alternatively, the standalone installation can be downloaded directly from ONLYOFFICE. The password used in the setup must also be stored in a global variable.
 
-ONLYOFFICE muss beim Laden der Seite geladen werden (es darf also kein conditional rendering der script Komponente geben).
+ONLYOFFICE must be loaded when the page is opened. In other words, the script component must not be rendered conditionally.
 
 ```
 @variables.yaml@
