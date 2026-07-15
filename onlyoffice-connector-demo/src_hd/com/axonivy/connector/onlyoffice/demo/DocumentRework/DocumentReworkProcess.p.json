@@ -62,10 +62,7 @@
       "name" : "Load document",
       "config" : {
         "output" : {
-          "code" : [
-            "import com.axonivy.connector.onlyoffice.demo.DemoService;",
-            "out.document = ivy.wf.documents().get(in.documentId);"
-          ]
+          "code" : "out.document = ivy.wf.documents().get(in.documentId);"
         },
         "sudo" : true
       },

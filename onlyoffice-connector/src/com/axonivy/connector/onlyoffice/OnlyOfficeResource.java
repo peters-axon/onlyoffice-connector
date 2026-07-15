@@ -55,7 +55,6 @@ public class OnlyOfficeResource {
 
 		return Response.ok(doc.getStream())
 				.header("Content-Disposition", "attachment; filename=\"%s\"".formatted(doc.getFileName()))
-				// .header("Content-Type", "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
 				.build();
 	}
 
@@ -76,7 +75,7 @@ public class OnlyOfficeResource {
 				var url = payload.get("url").asText();
 
 				var intUrl = OnlyOfficeService.get().toInternalUrl(url);
-				Ivy.log().info("Converting URL to internal: original: {0} internal: {1}", url, intUrl);
+				Ivy.log().debug("Converting URL to internal: original: {0} internal: {1}", url, intUrl);
 
 				var client = OnlyOfficeService.get().absolute(intUrl);
 
@@ -86,13 +85,13 @@ public class OnlyOfficeResource {
 
 				var dei = OnlyOfficeService.get().extractDocumentEditId(key);
 
-				Ivy.log().info("Save Document: {0}", dei.documentId());
+				Ivy.log().debug("Save Document: {0}", dei.documentId());
 
 				var doc = OnlyOfficeDocument.builder().editGroup(dei.editGroup()).documentId(dei.documentId()).stream(stream).build();
 
 				OnlyOfficeService.get().getOnlyOfficeDocumentHandler().save(doc, status == 2);
 
-				Ivy.log().info("Document was saved: {0}", dei.documentId());
+				Ivy.log().debug("Document was saved: {0}", dei.documentId());
 
 				break;
 			default:

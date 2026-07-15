@@ -21,6 +21,9 @@ Erklärung, dass Save standardmäßig asynchron und automatisch erst nach dem Ve
 editorConfig.customization.autosave auf false und
 editorConfig.customization.forcesave auf true
 
+Hinweis, dass Ändern, Schließen und danach wieder öffnen eines Dokumentes im selben Browser eventuell eine neue Version des Dokumentes am Server erzeugt und somit im Browser zu einem Fehler führt.
+
+
 
 ## Demo
 
