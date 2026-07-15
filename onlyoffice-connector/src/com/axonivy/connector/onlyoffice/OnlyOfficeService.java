@@ -155,20 +155,21 @@ public class OnlyOfficeService {
 				.compact();
 	}
 
-	public static record DocumentEditId(String documentId, String editGroup) {
-		public static DocumentEditId create(String documentId, String editGroup) {
-			return new DocumentEditId(documentId, editGroup);
+	public static record DocumentEditId(String editGroup, String documentId) {
+		public static DocumentEditId create(String editGroup, String documentId) {
+			return new DocumentEditId(editGroup, documentId);
 		}
 		public static DocumentEditId fromList(List<String> list) {
 			return create(list.get(0), list.get(1));
 		}
 		public List<String> toList() {
-			return List.of(documentId, editGroup);
+			return List.of(editGroup, documentId);
 		}
 	}
 
 	/**
 	 * Create a document key for the document.
+	 *
 	 * @param editGroup any identifier, all edits in this group can occur in parallel.
 	 * @param id
 	 *
@@ -176,12 +177,12 @@ public class OnlyOfficeService {
 	 */
 	public String createDocumentKey(String editGroup, String documentId) {
 		try {
-			var key = MAPPER.writeValueAsString(DocumentEditId.create(documentId, editGroup).toList());
+			var key = MAPPER.writeValueAsString(DocumentEditId.create(editGroup, documentId).toList());
 			var enc = CryptoUtil.encrypt(key);
 			var bin = Base64.getDecoder().decode(enc);
 			return Base64.getUrlEncoder().withoutPadding().encodeToString(bin);
 		} catch (Exception e) {
-			throw new RuntimeException("Could not create key for documentId: '%s' editGroup: '%s'".formatted(documentId, editGroup), e);
+			throw new RuntimeException("Could not create key for editGroup: '%s' documentId: '%s'".formatted(editGroup, documentId), e);
 		}
 	}
 
@@ -285,8 +286,8 @@ public class OnlyOfficeService {
 	 */
 	@SuppressWarnings("unchecked")
 	public void putIfAbsent(Map<String, Object> map, Object...params) {
-		if(params.length < 2) {
-			throw new IllegalArgumentException("Need at least a key and a value parameter, got %d.".formatted(params.length));
+		if(map == null || params.length < 2) {
+			throw new IllegalArgumentException("Need at least a map, a key and a value parameter, got map: %s and %d parameters.".formatted(map, params.length));
 		}
 
 		var p = Arrays.asList(params);
