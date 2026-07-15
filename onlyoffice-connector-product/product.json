@@ -44,27 +44,6 @@
           }
         ]
       }
-    }, 
-    {
-      "id": "maven-dropins",
-      "data": {
-        "dependencies": [
-          {
-            "groupId": "com.axonivy.connector.onlyoffice",
-            "artifactId": "onlyoffice-connector",
-            "version": "${version}"
-          }
-        ],
-        "repositories": [
-          {
-            "id": "maven.axonivy.com",
-            "url": "https://maven.axonivy.com",
-            "snapshots": {
-              "enabled": "true"
-            }
-          }
-        ]
-      }
     }
   ]
 }
