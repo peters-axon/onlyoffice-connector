@@ -14,11 +14,14 @@ The `OnlyOfficeEditor` takes four parameters:
 
 editGroup
 : If you want to allow simultaneous editing of a single document by multiple users, make sure that all of them use the same `editGroup`. Please note that every change followed by closing and reopening the editor in the same browser for the same document must occur with a different `editGroup`. This is a documented requirement of ONLYOFFICE. If you change a document, close the editor (for example by leaving the page), and then reopen it again, you will receive a "version has been changed" error.
-* documentId
+
+documentId
 : The ID of a document that allows the `OnlyOfficeDocumentHandler` to load and save the file. In the demo, the UUID of an Ivy document is used as the ID. If you keep your documents in a database, it might be the primary key of the database record.
-* fileName
+
+fileName
 : The name of the file being edited as displayed in the editor.
-* configuration
+
+configuration
 : A JSON block that can be used to adapt the default configuration. The default configuration covers the document key, type, and name and also sets the current user's name and locale. Information supplied here takes precedence. For example, if you pass another username, it will override the automatically set username.
 
 ### Host your own documents and implement your own `OnlyOfficeDocumentHandler`
