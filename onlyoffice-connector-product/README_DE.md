@@ -1,14 +1,6 @@
-<!--
-Dear developer !     
+# ONLYOFFICE Connector
 
-When you create your very valuable documentation, please be aware that this  is not only published on github. With this file we provide a German translation of the description-tab, i.e. https://market.axonivy.com/adobe-acrobat-connector#tab-description. Please contact us if you need support with the German translation.
--->
+Der [ONLYOFFICE](https://onlyoffice.com)-Connector ermöglicht das direkte Bearbeiten gängiger Office-Dokumente wie Word-, Excel- und PowerPoint-Dateien, indem der ONLYOFFICE Document Server mit Axon Ivy verbunden wird. Dadurch können Nutzer Dokumente direkt im Anwendungsworkflow bearbeiten, ohne den Prozesskontext zu verlassen. Eine Liste der unterstützten Office-Dateiformate finden Sie unter https://api.onlyoffice.com/docs/docs-api/usage-api/config/document/.
 
-# onlyoffice-connector Connector
+Bitte besuchen Sie [ONLYOFFICE Docs](https://onlyoffice.com/docs) für die FAQ und Downloads!
 
-Bitte übersetze mindestens das "Description"-Chapter aus https://github.com/axonivy-market/onlyoffice-connector/blob/master/onlyoffice-connector-product/README.md. Es wird auf unserer Homepage angezeigt.
-Falls Du darüber hinaus auch die anderen Chapter übersetzt, werden auch diese auf der Homepage auf Deutsch angezeigt.
-
-<!--
-Die Erläuterungen unter „MEIN-PRODUKT-NAME“ werden z.B. für den  Adobe Konnektor hier angezeigt: https://market.axonivy.com/adobe-acrobat-connector#tab-description wenn ein Nutzer Deutsch als Anzeigesprache ausgewählt hat.
--->
