@@ -1,30 +1,54 @@
 # ONLYOFFICE Connector
 
-The ONLYOFFICE Connector enables inline editing by integrating the ONLYOFFICE Document Server into Axon Ivy. The purpose is to allow users to edit documents directly inside the application workflow without leaving the process context.
+The [ONLYOFFICE](https://onlyoffice.com) Connector enables inline editing of typical office documents (Word, Excel, Powerpoint) by integrating the ONLYOFFICE Document Server with Axon Ivy. The purpose is to allow users to edit documents directly inside the application workflow without leaving the process context. For a list of supported Office file formats please visit https://api.onlyoffice.com/docs/docs-api/usage-api/config/document/.
 
-A custom handler for loading and saving files can be created and registered through a subprocess using the signature:
+Please visit [ONLYOFFICE Docs](https://onlyoffice.com/docs) to see the FAQ and downloads.
 
-OnlyOfficeDocumentHandler provideOnlyOfficeDocumentHandler()
+### ONLYOFFIC API
 
-This handler is then consumed by the connector. The default handler works with Ivy documents.
+The implementation of this connector is based on the [ONLYOFFICE document editor API](https://api.onlyoffice.com/docs/docs-api/usage-api/doceditor/).
 
-For reference, the implementation is based on the ONLYOFFICE document editor API:
-https://api.onlyoffice.com/docs/docs-api/usage-api/doceditor/
+To use this connector, add the `OnlyOfficeScript` and the `OnlyOfficeEditor` components to your xhtml page. As the `OnlyOfficeScript` component contains the loading of the editor script into the Dom tree it should be loaded independently of any other page logic to display the `OnlyOfficeEditor`.
 
-The configuration can be overridden by dynamic content whenever the dynamic content is not available. This makes it possible to adapt the editor configuration to runtime-specific requirements.
+The `OnlyOfficeEditor` takes 4 parameters:
 
-Avoid opening the same document with the same `editGroup` in the same editor twice in a row. Reusing the same editor context for the same document can lead to inconsistent behavior.
+editGroup
+: If you want to allow simultaneous editing of a single document by multiple users, make sure, that all of them get the same `editGroup`. *Please note, that every changing and then closing/opening of the editor in the same browser for the same document must occur with a different edit group*. This is a documented requirement of ONLYOFFICE. If you change a document, then close the editor (e.g. by leaving the page) and then opening the editor again, you will get a "version has been changed" error.
+* documentId
+: The id of a document which allows the `OnlyOfficeDocumentHandler` to load and save the file. In the demo, the UUID of an Ivy document will be used as the id. If you keep your documents in a database, it might be the primary key of the database record.
+* fileName
+: The name of the file beeing edited to display in the editor.
+* configuration
+: A JSON block that can be used to adapt the default configuration. The default configuration covers the document key, type and name and also sets the current users name and locale. Information added here will have precedence. I.e. if you pass another user
+name, then this will override the automatically set username.
 
-Saving is asynchronous by default and is usually executed only after the page is left. However, the editor configuration can be used to disable autosave and enable forcesave:
+### Host your own documents, implement your own `OnlyOfficeDocumentHandler`
 
-```text
-editorConfig.customization.autosave = false
-editorConfig.customization.forcesave = true
+Host your own documents and provide them via the ONLYOFFICE document server for collaborativ editing.
+
+The connector uses a handler to load and save a document. A default handler is provided
+and uses AxonIvy's native documents. A custom handler for loading and saving files can be created by implementing the interface `com.axonivy.connector.onlyoffice.documenthandler.OnlyOfficeDocumentHandler`. Own handlers need to be registered through a subprocess using the signature `OnlyOfficeDocumentHandler provideOnlyOfficeDocumentHandler()` (see the demo for an example). This sub-process will be called when a handler is needed for the first time.
+
+### Caveats
+
+As mentioned before, every opening of an editor in the same browser requires a unique `editGroup`, otherwhise the error "The version has been changed" will be displayed and it will not be possible to edit a document.
+
+Automatic saving is default and asynchronous. Saving is usually executed only after the page is closed/left. In AxonIvy this usually happens at the next task switch or when the process ends. There is also a way to request an immediate save by calling `OnlyOfficeService.get().callForcesave(key, userdata)`. 
+
+If you do not like autosave, the editor configuration can be used to disable autosave and enable forcesave:
+
+```json
+{
+    "editorConfig": {
+        "customization": {
+            "autosave" = false;
+            "forcesave" = true;
+        }
+    }
+}
 ```
 
-Note that changing, closing, and then reopening the same document in the same browser may cause a new server-side version of the document to be created. This can then lead to an error in the browser when the previous editor state is reused.
-
-
+Nevertheless, in any case a save is never synchronous but might be delayed for a few seconds. If you depend on the saved version of a document immediately after editing you need to implement some kind of waiting for the document to finish. A document will be finished/saved, when the save method of the `OnlyOfficeDocumentHandler` is called with the `last` flag set to `true`.
 
 ## Demo
 
@@ -48,9 +72,13 @@ The demo highlights the core collaboration model of the connector: multiple user
 
 ## Setup
 
-First, the ONLYOFFICE Document Server must be started. A docker-compose setup is available in the separate project for this purpose. Alternatively, the standalone installation can be downloaded directly from ONLYOFFICE. The password used in the setup must also be stored in a global variable.
+To setup the connector you need access to an ONLYOFFICE Document Server. The demo project includes a `docker-compose` setup for this purpose. You can start the docker server by changing into the directory containing the `compose.yaml` file and executing the command
 
-ONLYOFFICE must be loaded when the page is opened. In other words, the script component must not be rendered conditionally.
+`docker-compose up`
+
+Alternatively, the standalone installation can be downloaded directly from ONLYOFFICE.
+
+Please set the global variables following their description. If you are using the provided demo docker container, make sure, that the password set in the `compose.yaml` file matches the password set in the global variables. The password must be at least 32 characters long.
 
 ```
 @variables.yaml@
