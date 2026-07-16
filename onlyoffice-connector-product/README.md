@@ -32,7 +32,13 @@ The connector uses a handler to load and save a document. A default handler (`co
 
 ### Caveats
 
+#### Document edit groups
+
 When you want to enable simultaneous editing for multiple users, all must use the same `editGroup`. In general, when the last user leaves editing the document, the `editGroup` cannot be used again, otherwise the error "The version has been changed" will be displayed and it will not be possible to edit the document.
+
+If you want to allow for simultaneous editing, you must make ensure, that no editor can enter an already closed edit group. This is best done in a project specific `OnlyOfficeDocumentHandler` where you can cleanup edit groups when no user is editing the document.
+
+#### Asynchronous saving
 
 Automatic saving is enabled by default and is asynchronous. Saving is usually executed only after the page is closed or left. In Axon Ivy, this usually happens at the next task switch or when the process ends. There is also a way to request an immediate save by calling `OnlyOfficeService.get().callForcesave(key, userdata)`.
 
@@ -53,11 +59,11 @@ Nevertheless, a save is never synchronous and may be delayed by a few seconds. I
 
 ## Demo
 
-The demo shows a collaboration scenario in which one user uploads a document as the author, edits it, and selects it for the next step. Afterwards, a reviewer and a compliance officer each receive a task to work on the same document. They can perform their updates simultaneously.
+The demo illustrates a collaboration scenario in which one user uploads a document as the author, edits it, and selects it for the next step. Afterwards, a reviewer and a compliance officer each receive a task to work on the same document. They can then make their updates simultaneously.
 
 ![Select document](images/01_select_document.png)
 
-The process starts by selecting the document from the Axon Ivy workflow context. The user chooses the file that should be opened in the ONLYOFFICE editor.
+The process starts when the document is selected from the Axon Ivy workflow context. The user chooses the file to be opened in the ONLYOFFICE editor.
 
 ![Edit document](images/02_edit_document.png)
 
@@ -65,21 +71,21 @@ Once the document is opened, the user can edit it directly in the integrated edi
 
 ![Rework tasks](images/03_rework_tasks.png)
 
-After the author completes the initial editing step, the document is handed over to the next participants. A reviewer and a compliance representative each receive the relevant task and continue the same workflow with the same document.
+After the author completes the initial editing step, the document is handed over to the next participants. A reviewer and a compliance representative each receive the relevant task and continue the same workflow on the same document.
 
 ![Simultaneous editing](images/04_simultaneous_editing.png)
 
-The demo highlights the connector’s core collaboration model: multiple users can work on the same document at the same time, which supports parallel review and rework within a single end-to-end process.
+The demo highlights the connector’s core collaboration model: multiple users can work on the same document at the same time, supporting parallel review and rework within a single end-to-end process.
 
 ### Example of a collaborative `OnlyOfficeDocumentHandler`
 
-The demo uses an own `OnlyOfficeDocumentHandler`. This document handler asynchronously reacts to callback events with status `2` (last user closed the document editor and the document needs saving) or `4` (last user closed the document editor, but there was no change). If such an event is received, the cached document `editGroup` is cleared so that the next editor will have to create a new one. This is to avoid that users try to "re-enter" an already dismissed `editGroup`.
+The demo uses its own `OnlyOfficeDocumentHandler`. This document handler asynchronously reacts to callback events with status `2` (the last user closed the document editor and the document needs saving) or `4` (the last user closed the document editor, but there were no changes). When such an event is received, the cached document `editGroup` is cleared so that the next editor has to create a new one. This prevents users from trying to re-enter an already dismissed `editGroup`.
 
-In the example, **User A** and **User B** are editing the document at the same time using the same cached document `editGroup` **123** which was created when **User A** started editing. Both users finish their edit and close the editor. The document `editGroup` **123** is cleared from the cache. Later **User C** starts editing and a new document `editGroup` **456** is created.
+In this example, **User A** and **User B** edit the same document at the same time using the same cached document `editGroup` **123**, which was created when **User A** started editing. Both users finish editing and close the editor. The document `editGroup` **123** is then cleared from the cache. Later, **User C** starts editing, and a new document `editGroup` **456** is created.
 
 ```mermaid
 gantt
-    title Editing at the same time
+    title Concurrent editing example
     dateFormat HH:mm
     axisFormat %H:%M
 
