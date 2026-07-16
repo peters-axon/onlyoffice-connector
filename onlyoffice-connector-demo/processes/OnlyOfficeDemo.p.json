@@ -25,34 +25,15 @@
         "at" : { "x" : 96, "y" : 128 }
       },
       "connect" : [
-        { "id" : "f2", "to" : "f3" }
+        { "id" : "f2", "to" : "f5" }
       ]
     }, {
       "id" : "f1",
       "type" : "TaskEnd",
       "visual" : {
-        "at" : { "x" : 1024, "y" : 128 },
+        "at" : { "x" : 704, "y" : 128 },
         "labelOffset" : { "x" : 13, "y" : 33 }
       }
-    }, {
-      "id" : "f3",
-      "type" : "Script",
-      "name" : "Set edit group",
-      "config" : {
-        "output" : {
-          "code" : [
-            "import java.util.UUID;",
-            "",
-            "in.editGroup = UUID.randomUUID().toString();"
-          ]
-        }
-      },
-      "visual" : {
-        "at" : { "x" : 224, "y" : 128 }
-      },
-      "connect" : [
-        { "id" : "f4", "to" : "f5", "color" : "default" }
-      ]
     }, {
       "id" : "f5",
       "type" : "DialogCall",
@@ -61,7 +42,7 @@
         "dialog" : "com.axonivy.connector.onlyoffice.demo.DocumentPreparation:start(String)",
         "call" : {
           "map" : {
-            "param.editGroup" : "in.editGroup"
+            "param.editGroup" : "java.util.UUID.randomUUID().toString()"
           }
         },
         "output" : {
@@ -73,10 +54,10 @@
         }
       },
       "visual" : {
-        "at" : { "x" : 384, "y" : 128 }
+        "at" : { "x" : 224, "y" : 128 }
       },
       "connect" : [
-        { "id" : "f6", "to" : "f19", "color" : "default" }
+        { "id" : "f6", "to" : "f7", "color" : "default", "var" : "in1" }
       ]
     }, {
       "id" : "f7",
@@ -97,12 +78,12 @@
           } ]
       },
       "visual" : {
-        "at" : { "x" : 672, "y" : 128 },
+        "at" : { "x" : 352, "y" : 128 },
         "labelOffset" : { "x" : 14, "y" : 34 }
       },
       "connect" : [
-        { "id" : "f8", "to" : "f9", "via" : [ { "x" : 712, "y" : 64 } ], "color" : "default", "condition" : "ivp==\"TaskA.ivp\"" },
-        { "id" : "f12", "to" : "f11", "via" : [ { "x" : 712, "y" : 192 } ], "condition" : "ivp==\"TaskB.ivp\"" }
+        { "id" : "f8", "to" : "f9", "via" : [ { "x" : 392, "y" : 64 } ], "color" : "default", "condition" : "ivp==\"TaskA.ivp\"" },
+        { "id" : "f12", "to" : "f11", "via" : [ { "x" : 392, "y" : 192 } ], "condition" : "ivp==\"TaskB.ivp\"" }
       ]
     }, {
       "id" : "f9",
@@ -112,16 +93,16 @@
         "dialog" : "com.axonivy.connector.onlyoffice.demo.DocumentRework:start(String,String)",
         "call" : {
           "map" : {
-            "param.editGroup" : "in.editGroup",
+            "param.editGroup" : "com.axonivy.connector.onlyoffice.demo.DemoService.get().getEditGroup(in.documentId)",
             "param.documentId" : "in.documentId"
           }
         }
       },
       "visual" : {
-        "at" : { "x" : 800, "y" : 64 }
+        "at" : { "x" : 480, "y" : 64 }
       },
       "connect" : [
-        { "id" : "f10", "to" : "f13", "via" : [ { "x" : 888, "y" : 64 } ], "color" : "default", "var" : "in1" }
+        { "id" : "f10", "to" : "f13", "via" : [ { "x" : 568, "y" : 64 } ], "color" : "default", "var" : "in1" }
       ]
     }, {
       "id" : "f11",
@@ -131,16 +112,16 @@
         "dialog" : "com.axonivy.connector.onlyoffice.demo.DocumentRework:start(String,String)",
         "call" : {
           "map" : {
-            "param.editGroup" : "in.editGroup",
+            "param.editGroup" : "com.axonivy.connector.onlyoffice.demo.DemoService.get().getEditGroup(in.documentId)",
             "param.documentId" : "in.documentId"
           }
         }
       },
       "visual" : {
-        "at" : { "x" : 800, "y" : 192 }
+        "at" : { "x" : 480, "y" : 192 }
       },
       "connect" : [
-        { "id" : "f15", "to" : "f13", "via" : [ { "x" : 888, "y" : 192 } ], "var" : "in2" }
+        { "id" : "f15", "to" : "f13", "via" : [ { "x" : 568, "y" : 192 } ], "var" : "in2" }
       ]
     }, {
       "id" : "f13",
@@ -151,7 +132,7 @@
           } ]
       },
       "visual" : {
-        "at" : { "x" : 928, "y" : 128 },
+        "at" : { "x" : 608, "y" : 128 },
         "labelOffset" : { "x" : 14, "y" : 34 }
       },
       "connect" : [
@@ -168,7 +149,7 @@
             { "name" : "onlyOfficeDocumentHandler", "type" : "com.axonivy.connector.onlyoffice.documenthandler.OnlyOfficeDocumentHandler", "desc" : "" }
           ],
           "map" : {
-            "result.onlyOfficeDocumentHandler" : "com.axonivy.connector.onlyoffice.documenthandler.OnlyOfficeBusinessCaseDocumentHandler.get()"
+            "result.onlyOfficeDocumentHandler" : "com.axonivy.connector.onlyoffice.demo.OnlyOfficeIvyDocumentHandlerWithEditGroup.get()"
           },
           "code" : "ivy.log.info(\"Provided document handler: {0}\", result.onlyOfficeDocumentHandler);"
         }
@@ -199,34 +180,15 @@
         "A sub-process with this exact signature can be defined anywhere in the current application to provide your own document handler. ",
         "If you do not define it, a default handler will be used, which loads and saves files from and to ivy documents.",
         "",
-        "Note: this example sets the default handler - it is just for demonstration."
+        "This example sets a specific handler, which clears the cached document edit group whenever the last editor leaves the document editor. Please see the demo section in our documentation for an explanation."
       ],
       "visual" : {
-        "at" : { "x" : 176, "y" : 276 },
-        "size" : { "width" : 304, "height" : 152 },
+        "at" : { "x" : 176, "y" : 272 },
+        "size" : { "width" : 304, "height" : 180 },
         "color" : "optional"
       },
       "connect" : [
         { "id" : "f17", "to" : "f18", "color" : "optional" }
-      ]
-    }, {
-      "id" : "f19",
-      "type" : "Script",
-      "name" : "New edit group",
-      "config" : {
-        "output" : {
-          "code" : [
-            "import java.util.UUID;",
-            "",
-            "in.editGroup = UUID.randomUUID().toString();"
-          ]
-        }
-      },
-      "visual" : {
-        "at" : { "x" : 544, "y" : 128 }
-      },
-      "connect" : [
-        { "id" : "f22", "to" : "f7", "color" : "default", "var" : "in1" }
       ]
     } ],
   "layout" : {

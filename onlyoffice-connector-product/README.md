@@ -13,7 +13,7 @@ To use this connector, add the `OnlyOfficeScript` and `OnlyOfficeEditor` compone
 The `OnlyOfficeEditor` takes four parameters:
 
 editGroup
-: If you want to allow simultaneous editing of a single document by multiple users, make sure that all of them use the same `editGroup`. Please note that every change followed by closing and reopening the editor in the same browser for the same document must occur with a different `editGroup`. This is a documented requirement of ONLYOFFICE. If you change a document, close the editor (for example by leaving the page), and then reopen it again, you will receive a "version has been changed" error.
+: If you want to allow simultaneous editing of a single document by multiple users, make sure that all of them use the same `editGroup`. Please note that once every user stopped editing the document, it is no longer possible to re-use the `editGroup` for another editor (otherwise you will see a "Version has been changed error"). This is a documented requirement of ONLYOFFICE.
 
 documentId
 : The ID of a document that allows the `OnlyOfficeDocumentHandler` to load and save the file. In the demo, the UUID of an Ivy document is used as the ID. If your documents are stored in a database, this may be the primary key of the database record.
@@ -28,11 +28,11 @@ configuration
 
 Host your own documents and provide them via the ONLYOFFICE Document Server for collaborative editing.
 
-The connector uses a handler to load and save a document. A default handler is provided and uses Axon Ivy's native documents. A custom handler for loading and saving files can be created by implementing the interface `com.axonivy.connector.onlyoffice.documenthandler.OnlyOfficeDocumentHandler`. Custom handlers need to be registered through a subprocess using the signature `OnlyOfficeDocumentHandler provideOnlyOfficeDocumentHandler()` (see the demo for an example). This subprocess is called when a handler is needed for the first time.
+The connector uses a handler to load and save a document. A default handler (`com.axonivy.connector.onlyoffice.documenthandler.OnlyOfficeIvyDocumentHandler`) is provided and uses Axon Ivy's native documents. A custom handler for loading and saving files can be created by implementing the interface `com.axonivy.connector.onlyoffice.documenthandler.OnlyOfficeDocumentHandler`. Custom handlers need to be registered through a subprocess using the signature `OnlyOfficeDocumentHandler provideOnlyOfficeDocumentHandler()` (see the demo for an example). This subprocess is called when a handler is needed for the first time.
 
 ### Caveats
 
-As mentioned before, every opening of an editor in the same browser requires a unique `editGroup`; otherwise the error "The version has been changed" will be displayed and it will not be possible to edit the document.
+When you want to enable simultaneous editing for multiple users, all must use the same `editGroup`. In general, when the last user leaves editing the document, the `editGroup` cannot be used again, otherwise the error "The version has been changed" will be displayed and it will not be possible to edit the document.
 
 Automatic saving is enabled by default and is asynchronous. Saving is usually executed only after the page is closed or left. In Axon Ivy, this usually happens at the next task switch or when the process ends. There is also a way to request an immediate save by calling `OnlyOfficeService.get().callForcesave(key, userdata)`.
 
@@ -70,6 +70,28 @@ After the author completes the initial editing step, the document is handed over
 ![Simultaneous editing](images/04_simultaneous_editing.png)
 
 The demo highlights the connector’s core collaboration model: multiple users can work on the same document at the same time, which supports parallel review and rework within a single end-to-end process.
+
+### Example of a collaborative `OnlyOfficeDocumentHandler`
+
+The demo uses an own `OnlyOfficeDocumentHandler`. This document handler asynchronously reacts to callback events with status `2` (last user closed the document editor and the document needs saving) or `4` (last user closed the document editor, but there was no change). If such an event is received, the cached document `editGroup` is cleared so that the next editor will have to create a new one. This is to avoid that users try to "re-enter" an already dismissed `editGroup`.
+
+In the example, **User A** and **User B** are editing the document at the same time using the same cached document `editGroup` **123** which was created when **User A** started editing. Both users finish their edit and close the editor. The document `editGroup` **123** is cleared from the cache. Later **User C** starts editing and a new document `editGroup` **456** is created.
+
+```mermaid
+gantt
+    title Editing at the same time
+    dateFormat HH:mm
+    axisFormat %H:%M
+
+    section User A
+    Edit document with editGroup 123   :a1, 09:00, 09:15
+
+    section User B
+    Edit document with editGroup 123              :b1, 09:05, 09:20
+
+    section User C
+    Edit document with editGroup 456     :c1, 09:25, 09:35
+```
 
 ## Setup
 

@@ -23,7 +23,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import com.axonivy.connector.onlyoffice.documenthandler.OnlyOfficeBusinessCaseDocumentHandler;
+import com.axonivy.connector.onlyoffice.documenthandler.OnlyOfficeIvyDocumentHandler;
 import com.axonivy.connector.onlyoffice.documenthandler.OnlyOfficeDocumentHandler;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -67,7 +67,7 @@ public class OnlyOfficeService {
 
 				// Find subprocess
 				if (CollectionUtils.isEmpty(subProcessStartList)) {
-					handler = OnlyOfficeBusinessCaseDocumentHandler.get();
+					handler = OnlyOfficeIvyDocumentHandler.get();
 					Ivy.log().info("No process {0} was provided, using default handler.", ONLYOFFICE_DOCUMENT_PROVIDER_SUBPROCESS_SIGNATURE);
 				}
 				else {
@@ -263,7 +263,7 @@ public class OnlyOfficeService {
 			putIfAbsent(map, "document", "key", documentKey);
 			putIfAbsent(map, "document", "title", fileName);
 			putIfAbsent(map, "document", "url", getDocumentsBaseUrl("load/{key}", documentKey));
-			putIfAbsent(map, "editorConfig", "callbackUrl", getDocumentsBaseUrl("save"));
+			putIfAbsent(map, "editorConfig", "callbackUrl", getDocumentsBaseUrl("callback"));
 			putIfAbsent(map, "editorConfig", "lang", lang.getLanguage());
 			putIfAbsent(map, "editorConfig", "user", "id", ivyUser.getSecurityMemberId());
 			putIfAbsent(map, "editorConfig", "user", "name", ivyUser.getDisplayName());

@@ -8,10 +8,10 @@ import ch.ivyteam.ivy.workflow.document.IDocumentService;
 /**
  * Use workflow documents.
  */
-public class OnlyOfficeBusinessCaseDocumentHandler implements OnlyOfficeDocumentHandler {
-	private static final OnlyOfficeBusinessCaseDocumentHandler INSTANCE = new OnlyOfficeBusinessCaseDocumentHandler();
+public class OnlyOfficeIvyDocumentHandler implements OnlyOfficeDocumentHandler {
+	private static final OnlyOfficeIvyDocumentHandler INSTANCE = new OnlyOfficeIvyDocumentHandler();
 
-	public static OnlyOfficeBusinessCaseDocumentHandler get() {
+	public static OnlyOfficeIvyDocumentHandler get() {
 		return INSTANCE;
 	}
 
@@ -31,13 +31,15 @@ public class OnlyOfficeBusinessCaseDocumentHandler implements OnlyOfficeDocument
 	}
 
 	@Override
-	public void save(OnlyOfficeDocument document, boolean last) {
-		var doc = documents().get(document.getDocumentId());
-		if(doc == null) {
-			Ivy.log().warn("Document does not exists: {0}", document.getDocumentId());
-		}
-		else {
-			doc.write().withContentFrom(document.getStream());
+	public void callback(OnlyOfficeDocument document, int status) {
+		if(document != null) {
+			var doc = documents().get(document.getDocumentId());
+			if(doc == null) {
+				throw new RuntimeException("Document does not exists: %s".formatted(document.getDocumentId()));
+			}
+			else {
+				doc.write().withContentFrom(document.getStream());
+			}
 		}
 	}
 

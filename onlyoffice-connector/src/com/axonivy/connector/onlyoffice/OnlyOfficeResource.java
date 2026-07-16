@@ -25,7 +25,7 @@ public class OnlyOfficeResource {
 	 * Paths which will not require the X-Requested-By header.
 	 */
 	private static final Set<String> CSRF_EXCEPTIONS = Set.of(
-			"/documents/save"
+			"/documents/callback"
 			);
 
 	/**
@@ -59,47 +59,33 @@ public class OnlyOfficeResource {
 	}
 
 	@POST
-	@Path("save")
+	@Path("callback")
 	@PermitAll
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response saveDocument(@Context HttpServletRequest rq, JsonNode payload) {
-		Ivy.log().debug("Save call for document: {0}", payload);
+	public Response callback(@Context HttpServletRequest rq, JsonNode payload) {
+		Ivy.log().debug("Callback for document: {0}", payload);
 
-		try {
-			var status = payload.get("status").asInt();
-			switch(status) {
-			case 2:
-			case 6:
-				var key = payload.get("key").asText();
-				var url = payload.get("url").asText();
+		var status = payload.get("status").asInt();
+		var key = payload.get("key").asText();
+		var dei = OnlyOfficeService.get().extractDocumentEditId(key);
+		Ivy.log().debug("Document Id: {0}", dei.documentId());
+		var urlNode = payload.get("url");
+		OnlyOfficeDocument doc = null;
 
-				var intUrl = OnlyOfficeService.get().toInternalUrl(url);
-				Ivy.log().debug("Converting URL to internal: original: {0} internal: {1}", url, intUrl);
+		if(urlNode != null) {
+			var url = urlNode.asText();
+			var intUrl = OnlyOfficeService.get().toInternalUrl(url);
+			Ivy.log().debug("Converted URL to internal: original: {0} internal: {1}", url, intUrl);
 
-				var client = OnlyOfficeService.get().absolute(intUrl);
+			var client = OnlyOfficeService.get().absolute(intUrl);
 
-				var rsp = client.request().get();
+			var stream = client.request().get().readEntity(InputStream.class);
 
-				var stream = rsp.readEntity(InputStream.class);
-
-				var dei = OnlyOfficeService.get().extractDocumentEditId(key);
-
-				Ivy.log().debug("Save Document: {0}", dei.documentId());
-
-				var doc = OnlyOfficeDocument.builder().editGroup(dei.editGroup()).documentId(dei.documentId()).stream(stream).build();
-
-				OnlyOfficeService.get().getOnlyOfficeDocumentHandler().save(doc, status == 2);
-
-				Ivy.log().debug("Document was saved: {0}", dei.documentId());
-
-				break;
-			default:
-				break;
-			}
-		} catch (Exception e) {
-			Ivy.log().error("Exception during Document save.", e);
+			doc = OnlyOfficeDocument.builder().editGroup(dei.editGroup()).documentId(dei.documentId()).stream(stream).build();
 		}
+
+		OnlyOfficeService.get().getOnlyOfficeDocumentHandler().callback(doc, status);
 		return Response.ok(OnlyOfficeResult.OK).build();
 	}
 }
