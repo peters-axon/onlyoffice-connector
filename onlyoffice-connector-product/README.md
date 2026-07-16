@@ -73,7 +73,7 @@ Once the document is opened, the user can edit it directly in the integrated edi
 
 After the author completes the initial editing step, the document is handed over to the next participants. A reviewer and a compliance representative each receive the relevant task and continue the same workflow on the same document.
 
-![Simultaneous editing](images/04_simultaneous_editing.png)
+![Concurrent editing](images/04_concurrent_editing.png)
 
 The demo highlights the connector’s core collaboration model: multiple users can work on the same document at the same time, supporting parallel review and rework within a single end-to-end process.
 
@@ -83,21 +83,7 @@ The demo uses its own `OnlyOfficeDocumentHandler`. This document handler asynchr
 
 In this example, **User A** and **User B** edit the same document at the same time using the same cached document `editGroup` **123**, which was created when **User A** started editing. Both users finish editing and close the editor. The document `editGroup` **123** is then cleared from the cache. Later, **User C** starts editing, and a new document `editGroup` **456** is created.
 
-```mermaid
-gantt
-    title Concurrent editing example
-    dateFormat HH:mm
-    axisFormat %H:%M
-
-    section User A
-    Edit document with editGroup 123   :a1, 09:00, 09:15
-
-    section User B
-    Edit document with editGroup 123              :b1, 09:05, 09:20
-
-    section User C
-    Edit document with editGroup 456     :c1, 09:25, 09:35
-```
+![Concurrent editing](images/concurrent_editing.png)
 
 ## Setup
 
